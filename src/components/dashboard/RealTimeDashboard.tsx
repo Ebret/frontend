@@ -106,22 +106,22 @@ const RealTimeDashboard: React.FC = () => {
   const { summary, adminSummary, loading, error, fetchDashboardSummary, fetchAdminDashboardSummary } = useDashboard();
   const { config } = useWhiteLabel();
   const { user } = useAuth();
-  
+
   const [dateRange, setDateRange] = useState('month'); // 'week', 'month', 'quarter', 'year'
   const [refreshInterval, setRefreshInterval] = useState<number | null>(30); // seconds
-  
+
   // Auto-refresh dashboard data
   useEffect(() => {
     if (!refreshInterval) return;
-    
+
     const intervalId = setInterval(() => {
       fetchDashboardSummary();
-      
+
       if (user?.role === 'ADMIN') {
         fetchAdminDashboardSummary();
       }
     }, refreshInterval * 1000);
-    
+
     return () => clearInterval(intervalId);
   }, [refreshInterval, fetchDashboardSummary, fetchAdminDashboardSummary, user?.role]);
 
@@ -140,10 +140,10 @@ const RealTimeDashboard: React.FC = () => {
   const formatCurrency = (amount: number) => {
     return amount.toLocaleString('en-US', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'PHP',
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
-    });
+    }).replace('PHP', '₱');
   };
 
   if (loading) {
@@ -186,7 +186,7 @@ const RealTimeDashboard: React.FC = () => {
         <h2 className="text-2xl font-bold" style={{ color: config?.primaryColor }}>
           Real-Time Dashboard
         </h2>
-        
+
         <div className="flex space-x-2">
           <select
             value={dateRange}
@@ -198,7 +198,7 @@ const RealTimeDashboard: React.FC = () => {
             <option value="quarter">This Quarter</option>
             <option value="year">This Year</option>
           </select>
-          
+
           <select
             value={refreshInterval?.toString() || 'off'}
             onChange={(e) => handleRefreshIntervalChange(e.target.value)}
@@ -210,7 +210,7 @@ const RealTimeDashboard: React.FC = () => {
             <option value="60">Refresh every 1m</option>
             <option value="300">Refresh every 5m</option>
           </select>
-          
+
           <button
             onClick={() => {
               fetchDashboardSummary();
@@ -225,7 +225,7 @@ const RealTimeDashboard: React.FC = () => {
           </button>
         </div>
       </div>
-      
+
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white shadow rounded-lg p-4">
@@ -258,7 +258,7 @@ const RealTimeDashboard: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white shadow rounded-lg p-4">
           <div className="flex items-center">
             <div className="flex-shrink-0 p-3 rounded-md" style={{ backgroundColor: `${config?.primaryColor}20` }}>
@@ -289,7 +289,7 @@ const RealTimeDashboard: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white shadow rounded-lg p-4">
           <div className="flex items-center">
             <div className="flex-shrink-0 p-3 rounded-md" style={{ backgroundColor: `${config?.primaryColor}20` }}>
@@ -320,7 +320,7 @@ const RealTimeDashboard: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white shadow rounded-lg p-4">
           <div className="flex items-center">
             <div className="flex-shrink-0 p-3 rounded-md" style={{ backgroundColor: `${config?.primaryColor}20` }}>
@@ -352,7 +352,7 @@ const RealTimeDashboard: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white shadow rounded-lg p-4">
@@ -377,7 +377,7 @@ const RealTimeDashboard: React.FC = () => {
             />
           </div>
         </div>
-        
+
         <div className="bg-white shadow rounded-lg p-4">
           <h3 className="text-lg font-medium text-gray-900 mb-4">Savings Activity</h3>
           <div className="h-64">
@@ -400,7 +400,7 @@ const RealTimeDashboard: React.FC = () => {
             />
           </div>
         </div>
-        
+
         <div className="bg-white shadow rounded-lg p-4">
           <h3 className="text-lg font-medium text-gray-900 mb-4">Membership Growth</h3>
           <div className="h-64">
@@ -423,7 +423,7 @@ const RealTimeDashboard: React.FC = () => {
             />
           </div>
         </div>
-        
+
         <div className="bg-white shadow rounded-lg p-4">
           <h3 className="text-lg font-medium text-gray-900 mb-4">Loan Status Distribution</h3>
           <div className="h-64 flex items-center justify-center">
@@ -444,7 +444,7 @@ const RealTimeDashboard: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Recent Activity */}
       <div className="bg-white shadow rounded-lg p-4">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Recent Activity</h3>
@@ -507,7 +507,7 @@ const RealTimeDashboard: React.FC = () => {
           </table>
         </div>
       </div>
-      
+
       {/* Real-time Status */}
       <div className="bg-white shadow rounded-lg p-4">
         <div className="flex items-center justify-between mb-4">
@@ -517,7 +517,7 @@ const RealTimeDashboard: React.FC = () => {
             <span className="text-sm text-gray-500">Live</span>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="border border-gray-200 rounded-lg p-4">
             <div className="flex justify-between items-center">
@@ -543,7 +543,7 @@ const RealTimeDashboard: React.FC = () => {
               <span>+5% from last hour</span>
             </div>
           </div>
-          
+
           <div className="border border-gray-200 rounded-lg p-4">
             <div className="flex justify-between items-center">
               <h4 className="text-sm font-medium text-gray-500">System Load</h4>
@@ -568,7 +568,7 @@ const RealTimeDashboard: React.FC = () => {
               <span>Normal operation</span>
             </div>
           </div>
-          
+
           <div className="border border-gray-200 rounded-lg p-4">
             <div className="flex justify-between items-center">
               <h4 className="text-sm font-medium text-gray-500">API Response Time</h4>

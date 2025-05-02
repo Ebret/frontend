@@ -42,12 +42,12 @@ const SavingsAccountDetails: React.FC<SavingsAccountDetailsProps> = ({ accountId
   const router = useRouter();
   const { isAuthenticated } = useAuth();
   const { config } = useWhiteLabel();
-  
+
   const [account, setAccount] = useState<SavingsAccount | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  
+
   const [depositAmount, setDepositAmount] = useState('');
   const [withdrawalAmount, setWithdrawalAmount] = useState('');
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
@@ -59,7 +59,7 @@ const SavingsAccountDetails: React.FC<SavingsAccountDetailsProps> = ({ accountId
   useEffect(() => {
     const fetchAccountDetails = async () => {
       if (!accountId) return;
-      
+
       try {
         setIsLoading(true);
         const response = await api.getSavingsAccountById(accountId);
@@ -82,30 +82,30 @@ const SavingsAccountDetails: React.FC<SavingsAccountDetailsProps> = ({ accountId
     e.preventDefault();
     setError('');
     setTransactionSuccess('');
-    
+
     if (!depositAmount || parseFloat(depositAmount) <= 0) {
       setError('Please enter a valid deposit amount');
       return;
     }
-    
+
     setIsProcessing(true);
-    
+
     try {
       const response = await api.makeDeposit(accountId, {
         amount: parseFloat(depositAmount),
         description: 'Deposit via online banking',
       });
-      
+
       setTransactionSuccess('Deposit successful!');
       setDepositAmount('');
       setIsDepositModalOpen(false);
-      
+
       // Update account balance and transactions
       setAccount(prev => prev ? {
         ...prev,
         balance: response.data.newBalance,
       } : null);
-      
+
       // Fetch updated transactions
       const txnResponse = await api.getTransactionsBySavingsId(accountId);
       setTransactions(txnResponse.data.transactions);
@@ -121,52 +121,52 @@ const SavingsAccountDetails: React.FC<SavingsAccountDetailsProps> = ({ accountId
     e.preventDefault();
     setError('');
     setTransactionSuccess('');
-    
+
     if (!withdrawalAmount || parseFloat(withdrawalAmount) <= 0) {
       setError('Please enter a valid withdrawal amount');
       return;
     }
-    
+
     if (!account) return;
-    
+
     const amount = parseFloat(withdrawalAmount);
-    
+
     // Check if withdrawal amount exceeds balance
     if (amount > account.balance) {
       setError('Insufficient balance for this withdrawal');
       return;
     }
-    
+
     // Check if withdrawal would leave minimum balance
     if (account.balance - amount < account.savingsProduct.minimumBalance) {
       setError(`Withdrawal would leave less than the minimum balance of $${account.savingsProduct.minimumBalance}`);
       return;
     }
-    
+
     // Check if withdrawal exceeds limit (if any)
     if (account.savingsProduct.withdrawalLimit && amount > account.savingsProduct.withdrawalLimit) {
       setError(`Withdrawal exceeds the limit of $${account.savingsProduct.withdrawalLimit}`);
       return;
     }
-    
+
     setIsProcessing(true);
-    
+
     try {
       const response = await api.makeWithdrawal(accountId, {
         amount,
         description: 'Withdrawal via online banking',
       });
-      
+
       setTransactionSuccess('Withdrawal successful!');
       setWithdrawalAmount('');
       setIsWithdrawModalOpen(false);
-      
+
       // Update account balance and transactions
       setAccount(prev => prev ? {
         ...prev,
         balance: response.data.newBalance,
       } : null);
-      
+
       // Fetch updated transactions
       const txnResponse = await api.getTransactionsBySavingsId(accountId);
       setTransactions(txnResponse.data.transactions);
@@ -302,7 +302,7 @@ const SavingsAccountDetails: React.FC<SavingsAccountDetailsProps> = ({ accountId
           </div>
         </div>
       )}
-      
+
       {transactionSuccess && (
         <div className="bg-green-50 border-l-4 border-green-400 p-4 mb-4">
           <div className="flex">
@@ -326,7 +326,7 @@ const SavingsAccountDetails: React.FC<SavingsAccountDetailsProps> = ({ accountId
           </div>
         </div>
       )}
-      
+
       <div className="border-b border-gray-200 px-6 py-4">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold" style={{ color: config.primaryColor }}>
@@ -344,16 +344,16 @@ const SavingsAccountDetails: React.FC<SavingsAccountDetailsProps> = ({ accountId
           Account Number: {account.accountNumber}
         </p>
       </div>
-      
+
       <div className="px-6 py-4">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center">
           <div>
             <p className="text-sm text-gray-600">Current Balance</p>
             <p className="text-3xl font-bold" style={{ color: config.primaryColor }}>
-              ${account.balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              ₱{account.balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
           </div>
-          
+
           <div className="mt-4 md:mt-0 flex space-x-2">
             <button
               onClick={() => setIsDepositModalOpen(true)}
@@ -373,7 +373,7 @@ const SavingsAccountDetails: React.FC<SavingsAccountDetailsProps> = ({ accountId
           </div>
         </div>
       </div>
-      
+
       <div className="px-6 py-4 bg-gray-50">
         <h3 className="text-lg font-medium text-gray-900 mb-2">Account Details</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -385,7 +385,7 @@ const SavingsAccountDetails: React.FC<SavingsAccountDetailsProps> = ({ accountId
               <span className="font-medium">Interest Rate:</span> {(account.savingsProduct.interestRate * 100).toFixed(2)}%
             </p>
             <p className="text-sm text-gray-600">
-              <span className="font-medium">Minimum Balance:</span> ${account.savingsProduct.minimumBalance.toLocaleString()}
+              <span className="font-medium">Minimum Balance:</span> ₱{account.savingsProduct.minimumBalance.toLocaleString()}
             </p>
           </div>
           <div>
@@ -401,10 +401,10 @@ const SavingsAccountDetails: React.FC<SavingsAccountDetailsProps> = ({ accountId
           </div>
         </div>
       </div>
-      
+
       <div className="px-6 py-4">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Recent Transactions</h3>
-        
+
         {transactions.length === 0 ? (
           <p className="text-gray-500 text-center py-4">No transactions found.</p>
         ) : (
@@ -456,7 +456,7 @@ const SavingsAccountDetails: React.FC<SavingsAccountDetailsProps> = ({ accountId
                           : transaction.transactionType === 'WITHDRAWAL' || transaction.transactionType === 'FEE'
                           ? '-'
                           : ''}
-                        ${transaction.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        ₱{transaction.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -475,7 +475,7 @@ const SavingsAccountDetails: React.FC<SavingsAccountDetailsProps> = ({ accountId
             </table>
           </div>
         )}
-        
+
         <div className="mt-4 text-center">
           <button
             onClick={() => router.push(`/transactions?accountId=${accountId}`)}
@@ -486,7 +486,7 @@ const SavingsAccountDetails: React.FC<SavingsAccountDetailsProps> = ({ accountId
           </button>
         </div>
       </div>
-      
+
       {/* Deposit Modal */}
       {isDepositModalOpen && (
         <div className="fixed inset-0 z-10 overflow-y-auto">
@@ -494,9 +494,9 @@ const SavingsAccountDetails: React.FC<SavingsAccountDetailsProps> = ({ accountId
             <div className="fixed inset-0 transition-opacity" aria-hidden="true">
               <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
             </div>
-            
+
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            
+
             <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
@@ -529,7 +529,7 @@ const SavingsAccountDetails: React.FC<SavingsAccountDetailsProps> = ({ accountId
                             />
                           </div>
                         </div>
-                        
+
                         <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                           <button
                             type="submit"
@@ -557,7 +557,7 @@ const SavingsAccountDetails: React.FC<SavingsAccountDetailsProps> = ({ accountId
           </div>
         </div>
       )}
-      
+
       {/* Withdrawal Modal */}
       {isWithdrawModalOpen && (
         <div className="fixed inset-0 z-10 overflow-y-auto">
@@ -565,9 +565,9 @@ const SavingsAccountDetails: React.FC<SavingsAccountDetailsProps> = ({ accountId
             <div className="fixed inset-0 transition-opacity" aria-hidden="true">
               <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
             </div>
-            
+
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            
+
             <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
@@ -605,7 +605,7 @@ const SavingsAccountDetails: React.FC<SavingsAccountDetailsProps> = ({ accountId
                             {account.savingsProduct.withdrawalFee ? ` (Withdrawal fee: $${account.savingsProduct.withdrawalFee})` : ''}
                           </p>
                         </div>
-                        
+
                         <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                           <button
                             type="submit"

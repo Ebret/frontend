@@ -63,7 +63,7 @@ interface DashboardSummary {
 const ReportingDashboard: React.FC = () => {
   const { user, isAuthenticated } = useAuth();
   const { config } = useWhiteLabel();
-  
+
   const [summary, setSummary] = useState<DashboardSummary>({
     totalMembers: 0,
     activeMembers: 0,
@@ -74,7 +74,7 @@ const ReportingDashboard: React.FC = () => {
     totalAccounts: 0,
     pendingApplications: 0,
   });
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [dateRange, setDateRange] = useState('month'); // 'week', 'month', 'quarter', 'year'
@@ -84,11 +84,11 @@ const ReportingDashboard: React.FC = () => {
     const fetchDashboardSummary = async () => {
       try {
         setIsLoading(true);
-        
+
         // In a real app, this would be an API call
         // const response = await api.getDashboardSummary();
         // setSummary(response.data.summary);
-        
+
         // Mock data for demonstration
         setSummary({
           totalMembers: 250,
@@ -100,7 +100,7 @@ const ReportingDashboard: React.FC = () => {
           totalAccounts: 350,
           pendingApplications: 15,
         });
-        
+
         setIsLoading(false);
       } catch (err: any) {
         setError('Failed to fetch dashboard data. Please try again later.');
@@ -123,10 +123,10 @@ const ReportingDashboard: React.FC = () => {
   const formatCurrency = (amount: number) => {
     return amount.toLocaleString('en-US', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'PHP',
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
-    });
+    }).replace('PHP', '₱');
   };
 
   if (isLoading) {
@@ -169,7 +169,7 @@ const ReportingDashboard: React.FC = () => {
         <h2 className="text-2xl font-bold" style={{ color: config.primaryColor }}>
           Dashboard & Reports
         </h2>
-        
+
         <div className="flex space-x-2">
           <select
             value={dateRange}
@@ -181,7 +181,7 @@ const ReportingDashboard: React.FC = () => {
             <option value="quarter">This Quarter</option>
             <option value="year">This Year</option>
           </select>
-          
+
           <button
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2"
             style={{ backgroundColor: config.primaryColor }}
@@ -190,7 +190,7 @@ const ReportingDashboard: React.FC = () => {
           </button>
         </div>
       </div>
-      
+
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white shadow rounded-lg p-4">
@@ -221,7 +221,7 @@ const ReportingDashboard: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white shadow rounded-lg p-4">
           <div className="flex items-center">
             <div className="flex-shrink-0 p-3 rounded-md" style={{ backgroundColor: `${config.primaryColor}20` }}>
@@ -250,7 +250,7 @@ const ReportingDashboard: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white shadow rounded-lg p-4">
           <div className="flex items-center">
             <div className="flex-shrink-0 p-3 rounded-md" style={{ backgroundColor: `${config.primaryColor}20` }}>
@@ -279,7 +279,7 @@ const ReportingDashboard: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white shadow rounded-lg p-4">
           <div className="flex items-center">
             <div className="flex-shrink-0 p-3 rounded-md" style={{ backgroundColor: `${config.primaryColor}20` }}>
@@ -309,7 +309,7 @@ const ReportingDashboard: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white shadow rounded-lg p-4">
@@ -321,7 +321,7 @@ const ReportingDashboard: React.FC = () => {
             {/* In a real app, this would be a Chart.js or similar component */}
           </div>
         </div>
-        
+
         <div className="bg-white shadow rounded-lg p-4">
           <h3 className="text-lg font-medium text-gray-900 mb-4">Savings Activity</h3>
           <div className="h-64 flex items-center justify-center">
@@ -331,7 +331,7 @@ const ReportingDashboard: React.FC = () => {
             {/* In a real app, this would be a Chart.js or similar component */}
           </div>
         </div>
-        
+
         <div className="bg-white shadow rounded-lg p-4">
           <h3 className="text-lg font-medium text-gray-900 mb-4">Membership Growth</h3>
           <div className="h-64 flex items-center justify-center">
@@ -341,7 +341,7 @@ const ReportingDashboard: React.FC = () => {
             {/* In a real app, this would be a Chart.js or similar component */}
           </div>
         </div>
-        
+
         <div className="bg-white shadow rounded-lg p-4">
           <h3 className="text-lg font-medium text-gray-900 mb-4">Loan Status Distribution</h3>
           <div className="h-64 flex items-center justify-center">
@@ -352,7 +352,7 @@ const ReportingDashboard: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Recent Activity */}
       <div className="bg-white shadow rounded-lg p-4">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Recent Activity</h3>
@@ -448,7 +448,7 @@ const ReportingDashboard: React.FC = () => {
           </button>
         </div>
       </div>
-      
+
       {/* Report Generation */}
       <div className="bg-white shadow rounded-lg p-4">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Generate Reports</h3>

@@ -5,6 +5,8 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { WhiteLabelProvider } from "@/contexts/WhiteLabelContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { DashboardProvider } from "@/contexts/DashboardContext";
+import { CookieConsentProvider } from "@/contexts/CookieConsentContext";
+import AuditLogInitializer from "./AuditLogInitializer";
 
 
 const geistSans = Geist({
@@ -37,7 +39,10 @@ export default function RootLayout({
           <WhiteLabelProvider>
             <NotificationProvider>
               <DashboardProvider>
-                {children}
+                <CookieConsentProvider>
+                  <AuditLogInitializer />
+                  {children}
+                </CookieConsentProvider>
               </DashboardProvider>
             </NotificationProvider>
           </WhiteLabelProvider>

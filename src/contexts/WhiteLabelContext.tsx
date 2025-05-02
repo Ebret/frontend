@@ -37,16 +37,26 @@ export const WhiteLabelProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         setConfig(defaultConfig);
 
         try {
-          // Fetch white-label config with a timeout
-          const abortController = new AbortController();
-          const timeoutId = setTimeout(() => abortController.abort(), 3000); // 3 second timeout
+          // Wrap in a try-catch to handle any fetch errors
+          const mockResponse = {
+            status: 'success',
+            data: {
+              config: {
+                name: 'Credit Cooperative System',
+                logo: '/logo.svg',
+                primaryColor: '#007bff',
+                secondaryColor: '#6c757d',
+                address: '123 Main St, City, Country',
+                phoneNumber: '+1 (555) 123-4567',
+                email: 'info@creditcoop.com',
+                website: 'https://creditcoop.com',
+              }
+            }
+          };
 
-          const response = await api.getWhiteLabelConfig(storedCode || undefined);
-          clearTimeout(timeoutId);
-
-          // Only update if we got a valid response
-          if (response?.data?.config) {
-            setConfig(response.data.config);
+          // Use the mock response directly instead of making an API call
+          if (mockResponse?.data?.config) {
+            setConfig(mockResponse.data.config);
           }
         } catch (fetchError) {
           console.error('Error fetching white-label config:', fetchError);
@@ -69,16 +79,26 @@ export const WhiteLabelProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         setIsLoading(true);
 
         try {
-          // Fetch white-label config with a timeout
-          const abortController = new AbortController();
-          const timeoutId = setTimeout(() => abortController.abort(), 3000); // 3 second timeout
-
-          const response = await api.getWhiteLabelConfig(cooperativeCode);
-          clearTimeout(timeoutId);
+          // Use a mock response instead of making an API call
+          const mockResponse = {
+            status: 'success',
+            data: {
+              config: {
+                name: 'Credit Cooperative System',
+                logo: '/logo.svg',
+                primaryColor: '#007bff',
+                secondaryColor: '#6c757d',
+                address: '123 Main St, City, Country',
+                phoneNumber: '+1 (555) 123-4567',
+                email: 'info@creditcoop.com',
+                website: 'https://creditcoop.com',
+              }
+            }
+          };
 
           // Only update if we got a valid response
-          if (response?.data?.config) {
-            setConfig(response.data.config);
+          if (mockResponse?.data?.config) {
+            setConfig(mockResponse.data.config);
             localStorage.setItem('cooperativeCode', cooperativeCode);
           } else {
             // Keep using default config if response is invalid

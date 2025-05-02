@@ -6,6 +6,8 @@ import Link from 'next/link';
 import Layout from '@/components/Layout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWhiteLabel } from '@/contexts/WhiteLabelContext';
+import DataPrivacyAgreement from '@/components/DataPrivacyAgreement';
+import DataPrivacyFooter from '@/components/DataPrivacyFooter';
 
 const RegisterPage: React.FC = () => {
   const router = useRouter();
@@ -23,9 +25,12 @@ const RegisterPage: React.FC = () => {
   });
 
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(false);
+  const [privacyAgreed, setPrivacyAgreed] = useState(false);
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -35,13 +40,21 @@ const RegisterPage: React.FC = () => {
   }, [isAuthenticated, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+
+    if (type === 'checkbox') {
+      if (name === 'privacyAgreed') {
+        setPrivacyAgreed(checked);
+      }
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
 
     // Validate form
     if (formData.password !== formData.confirmPassword) {
@@ -54,10 +67,15 @@ const RegisterPage: React.FC = () => {
       return;
     }
 
+    if (!privacyAgreed) {
+      setError('You must agree to the Data Privacy Agreement to create an account');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      await register({
+      const response = await register({
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
@@ -67,7 +85,24 @@ const RegisterPage: React.FC = () => {
         address: formData.address,
       });
 
-      router.push('/dashboard');
+      // Check if the response contains a message about email verification
+      if (response?.message?.includes('verify') || response?.data?.user?.status === 'PENDING_VERIFICATION') {
+        setIsRegistered(true);
+        setSuccess('Registration successful! Please check your email to verify your account.');
+        // Clear form data
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          password: '',
+          confirmPassword: '',
+          phoneNumber: '',
+          address: '',
+        });
+      } else {
+        // If no verification is required, redirect to dashboard
+        router.push('/dashboard');
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to register. Please try again.');
     } finally {
@@ -129,7 +164,73 @@ const RegisterPage: React.FC = () => {
               </div>
             )}
 
-            <form className="space-y-6" onSubmit={handleSubmit}>
+            {success && (
+              <div className="mb-4 bg-green-50 border-l-4 border-green-400 p-4">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <svg
+                      className="h-5 w-5 text-green-400"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm text-green-700">{success}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {isRegistered ? (
+              <div className="text-center py-4">
+                <svg
+                  className="mx-auto h-12 w-12 text-green-400"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <h3 className="mt-2 text-lg font-medium text-gray-900">Registration successful!</h3>
+                <p className="mt-1 text-sm text-gray-500">
+                  Please check your email to verify your account. You will need to verify your email before you can log in.
+                </p>
+                <div className="mt-6">
+                  <Link
+                    href="/login"
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2"
+                    style={{ backgroundColor: config.primaryColor }}
+                  >
+                    Go to login
+                  </Link>
+                </div>
+                <div className="mt-4">
+                  <button
+                    type="button"
+                    onClick={() => setIsRegistered(false)}
+                    className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  >
+                    Register another account
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
                 <div>
                   <label
@@ -347,6 +448,35 @@ const RegisterPage: React.FC = () => {
                 </div>
               </div>
 
+              <div className="mb-4">
+                <div className="flex items-start">
+                  <div className="flex items-center h-5">
+                    <input
+                      id="privacyAgreed"
+                      name="privacyAgreed"
+                      type="checkbox"
+                      checked={privacyAgreed}
+                      onChange={handleChange}
+                      className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                      required
+                    />
+                  </div>
+                  <div className="ml-3 text-sm">
+                    <label htmlFor="privacyAgreed" className="font-medium text-gray-700">
+                      I agree to the <DataPrivacyAgreement cooperativeName={config.name} />
+                    </label>
+                    <p className="text-xs text-gray-500 mt-1 flex items-center">
+                      <img
+                        src="/images/ph-data-privacy-logo.svg"
+                        alt="Philippines Data Privacy Act Logo"
+                        className="h-4 w-4 mr-1"
+                      />
+                      In compliance with Republic Act No. 10173 - Data Privacy Act of 2012
+                    </p>
+                  </div>
+                </div>
+              </div>
+
               <div>
                 <button
                   type="submit"
@@ -357,7 +487,21 @@ const RegisterPage: React.FC = () => {
                   {isLoading ? 'Creating account...' : 'Create account'}
                 </button>
               </div>
+
+              <p className="mt-4 text-center text-sm text-gray-600">
+                Already have an account?{' '}
+                <Link
+                  href="/login"
+                  className="font-medium"
+                  style={{ color: config.primaryColor }}
+                >
+                  Sign in
+                </Link>
+              </p>
+
+              <DataPrivacyFooter />
             </form>
+            )}
           </div>
         </div>
       </div>

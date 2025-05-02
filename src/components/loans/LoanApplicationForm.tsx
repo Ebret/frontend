@@ -23,13 +23,13 @@ const LoanApplicationForm: React.FC = () => {
   const router = useRouter();
   const { user, isAuthenticated } = useAuth();
   const { config } = useWhiteLabel();
-  
+
   const [loanProducts, setLoanProducts] = useState<LoanProduct[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<LoanProduct | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  
+
   const [formData, setFormData] = useState({
     loanProductId: '',
     amount: '',
@@ -61,20 +61,20 @@ const LoanApplicationForm: React.FC = () => {
     if (formData.loanProductId) {
       const product = loanProducts.find(p => p.id === parseInt(formData.loanProductId, 10));
       setSelectedProduct(product || null);
-      
+
       // Reset amount and term if they're outside the new product's limits
       if (product) {
         setFormData(prev => ({
           ...prev,
-          amount: prev.amount ? 
-            (parseFloat(prev.amount) < product.minAmount ? product.minAmount.toString() : 
-             parseFloat(prev.amount) > product.maxAmount ? product.maxAmount.toString() : 
-             prev.amount) : 
+          amount: prev.amount ?
+            (parseFloat(prev.amount) < product.minAmount ? product.minAmount.toString() :
+             parseFloat(prev.amount) > product.maxAmount ? product.maxAmount.toString() :
+             prev.amount) :
             '',
-          term: prev.term ? 
-            (parseInt(prev.term, 10) < product.minTerm ? product.minTerm.toString() : 
-             parseInt(prev.term, 10) > product.maxTerm ? product.maxTerm.toString() : 
-             prev.term) : 
+          term: prev.term ?
+            (parseInt(prev.term, 10) < product.minTerm ? product.minTerm.toString() :
+             parseInt(prev.term, 10) > product.maxTerm ? product.maxTerm.toString() :
+             prev.term) :
             '',
         }));
       }
@@ -92,33 +92,33 @@ const LoanApplicationForm: React.FC = () => {
     e.preventDefault();
     setError('');
     setSuccess('');
-    
+
     // Validate form
     if (!formData.loanProductId || !formData.amount || !formData.term || !formData.purpose) {
       setError('Please fill in all required fields');
       return;
     }
-    
+
     if (!selectedProduct) {
       setError('Please select a valid loan product');
       return;
     }
-    
+
     const amount = parseFloat(formData.amount);
     const term = parseInt(formData.term, 10);
-    
+
     if (isNaN(amount) || amount < selectedProduct.minAmount || amount > selectedProduct.maxAmount) {
       setError(`Loan amount must be between ${selectedProduct.minAmount} and ${selectedProduct.maxAmount}`);
       return;
     }
-    
+
     if (isNaN(term) || term < selectedProduct.minTerm || term > selectedProduct.maxTerm) {
       setError(`Loan term must be between ${selectedProduct.minTerm} and ${selectedProduct.maxTerm} months`);
       return;
     }
-    
+
     setIsLoading(true);
-    
+
     try {
       const response = await api.createLoan({
         userId: user?.id,
@@ -127,7 +127,7 @@ const LoanApplicationForm: React.FC = () => {
         term,
         purpose: formData.purpose,
       });
-      
+
       setSuccess('Loan application submitted successfully!');
       setFormData({
         loanProductId: '',
@@ -135,7 +135,7 @@ const LoanApplicationForm: React.FC = () => {
         term: '',
         purpose: '',
       });
-      
+
       // Redirect to loans page after a short delay
       setTimeout(() => {
         router.push('/loans');
@@ -152,16 +152,16 @@ const LoanApplicationForm: React.FC = () => {
     if (!selectedProduct || !formData.amount || !formData.term) {
       return { monthlyPayment: 0, totalRepayment: 0, totalInterest: 0 };
     }
-    
+
     const principal = parseFloat(formData.amount);
     const interestRate = selectedProduct.interestRate / 12; // Monthly interest rate
     const numberOfPayments = parseInt(formData.term, 10);
-    
+
     // Calculate monthly payment using the formula: P * r * (1 + r)^n / ((1 + r)^n - 1)
     const monthlyPayment = principal * interestRate * Math.pow(1 + interestRate, numberOfPayments) / (Math.pow(1 + interestRate, numberOfPayments) - 1);
     const totalRepayment = monthlyPayment * numberOfPayments;
     const totalInterest = totalRepayment - principal;
-    
+
     return {
       monthlyPayment: isNaN(monthlyPayment) ? 0 : monthlyPayment,
       totalRepayment: isNaN(totalRepayment) ? 0 : totalRepayment,
@@ -176,7 +176,7 @@ const LoanApplicationForm: React.FC = () => {
       <h2 className="text-2xl font-bold mb-6" style={{ color: config.primaryColor }}>
         Loan Application
       </h2>
-      
+
       {error && (
         <div className="mb-4 bg-red-50 border-l-4 border-red-400 p-4">
           <div className="flex">
@@ -200,7 +200,7 @@ const LoanApplicationForm: React.FC = () => {
           </div>
         </div>
       )}
-      
+
       {success && (
         <div className="mb-4 bg-green-50 border-l-4 border-green-400 p-4">
           <div className="flex">
@@ -224,7 +224,7 @@ const LoanApplicationForm: React.FC = () => {
           </div>
         </div>
       )}
-      
+
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label htmlFor="loanProductId" className="block text-sm font-medium text-gray-700">
@@ -247,7 +247,7 @@ const LoanApplicationForm: React.FC = () => {
             ))}
           </select>
         </div>
-        
+
         {selectedProduct && (
           <div className="bg-gray-50 p-4 rounded-md">
             <h3 className="text-lg font-medium text-gray-900 mb-2">
@@ -262,7 +262,7 @@ const LoanApplicationForm: React.FC = () => {
                   <span className="font-medium">Interest Rate:</span> {(selectedProduct.interestRate * 100).toFixed(2)}%
                 </p>
                 <p className="text-sm text-gray-600">
-                  <span className="font-medium">Amount Range:</span> ${selectedProduct.minAmount.toLocaleString()} - ${selectedProduct.maxAmount.toLocaleString()}
+                  <span className="font-medium">Amount Range:</span> ₱{selectedProduct.minAmount.toLocaleString()} - ₱{selectedProduct.maxAmount.toLocaleString()}
                 </p>
               </div>
               <div>
@@ -270,7 +270,7 @@ const LoanApplicationForm: React.FC = () => {
                   <span className="font-medium">Term Range:</span> {selectedProduct.minTerm} - {selectedProduct.maxTerm} months
                 </p>
                 <p className="text-sm text-gray-600">
-                  <span className="font-medium">Processing Fee:</span> {selectedProduct.processingFee ? `$${selectedProduct.processingFee.toLocaleString()}` : 'None'}
+                  <span className="font-medium">Processing Fee:</span> {selectedProduct.processingFee ? `₱${selectedProduct.processingFee.toLocaleString()}` : 'None'}
                 </p>
               </div>
             </div>
@@ -283,7 +283,7 @@ const LoanApplicationForm: React.FC = () => {
             )}
           </div>
         )}
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label htmlFor="amount" className="block text-sm font-medium text-gray-700">
@@ -291,7 +291,7 @@ const LoanApplicationForm: React.FC = () => {
             </label>
             <div className="mt-1 relative rounded-md shadow-sm">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <span className="text-gray-500 sm:text-sm">$</span>
+                <span className="text-gray-500 sm:text-sm">₱</span>
               </div>
               <input
                 type="number"
@@ -310,11 +310,11 @@ const LoanApplicationForm: React.FC = () => {
             </div>
             {selectedProduct && (
               <p className="mt-1 text-xs text-gray-500">
-                Min: ${selectedProduct.minAmount.toLocaleString()}, Max: ${selectedProduct.maxAmount.toLocaleString()}
+                Min: ₱{selectedProduct.minAmount.toLocaleString()}, Max: ₱{selectedProduct.maxAmount.toLocaleString()}
               </p>
             )}
           </div>
-          
+
           <div>
             <label htmlFor="term" className="block text-sm font-medium text-gray-700">
               Loan Term (months) <span className="text-red-500">*</span>
@@ -338,7 +338,7 @@ const LoanApplicationForm: React.FC = () => {
             )}
           </div>
         </div>
-        
+
         <div>
           <label htmlFor="purpose" className="block text-sm font-medium text-gray-700">
             Loan Purpose <span className="text-red-500">*</span>
@@ -355,7 +355,7 @@ const LoanApplicationForm: React.FC = () => {
             disabled={isLoading}
           />
         </div>
-        
+
         {selectedProduct && formData.amount && formData.term && (
           <div className="bg-blue-50 p-4 rounded-md">
             <h3 className="text-lg font-medium text-gray-900 mb-2">
@@ -367,7 +367,7 @@ const LoanApplicationForm: React.FC = () => {
                   <span className="font-medium">Monthly Payment:</span>
                 </p>
                 <p className="text-xl font-bold" style={{ color: config.primaryColor }}>
-                  ${monthlyPayment.toFixed(2)}
+                  ₱{monthlyPayment.toFixed(2)}
                 </p>
               </div>
               <div>
@@ -375,7 +375,7 @@ const LoanApplicationForm: React.FC = () => {
                   <span className="font-medium">Total Repayment:</span>
                 </p>
                 <p className="text-xl font-bold" style={{ color: config.primaryColor }}>
-                  ${totalRepayment.toFixed(2)}
+                  ₱{totalRepayment.toFixed(2)}
                 </p>
               </div>
               <div>
@@ -383,7 +383,7 @@ const LoanApplicationForm: React.FC = () => {
                   <span className="font-medium">Total Interest:</span>
                 </p>
                 <p className="text-xl font-bold" style={{ color: config.primaryColor }}>
-                  ${totalInterest.toFixed(2)}
+                  ₱{totalInterest.toFixed(2)}
                 </p>
               </div>
             </div>
@@ -394,7 +394,7 @@ const LoanApplicationForm: React.FC = () => {
             </div>
           </div>
         )}
-        
+
         <div className="flex justify-end">
           <button
             type="button"
