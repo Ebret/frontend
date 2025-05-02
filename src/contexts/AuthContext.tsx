@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { api, User, LoginCredentials, RegisterData } from '@/lib/api';
+import { initializeSocket, disconnectSocket, isSocketConnected } from '@/lib/socket';
 
 interface AuthContextType {
   user: User | null;
@@ -48,6 +49,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
           setUser(mockResponse.data.user);
           setIsAuthenticated(true);
+
+          // Socket initialization is disabled
         } catch (error) {
           console.error('Error initializing auth:', error);
           localStorage.removeItem('token');
@@ -86,9 +89,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         },
       };
 
-      localStorage.setItem('token', mockResponse.data.token);
+      const token = mockResponse.data.token;
+      localStorage.setItem('token', token);
       setUser(mockResponse.data.user);
       setIsAuthenticated(true);
+
+      // Socket initialization is disabled
     } catch (error) {
       console.error('Login error:', error);
       throw error;
@@ -165,6 +171,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
+      // Disconnect socket
+      try {
+        disconnectSocket();
+      } catch (socketError) {
+        console.error('Socket disconnection error:', socketError);
+      }
+
       localStorage.removeItem('token');
       setUser(null);
       setIsAuthenticated(false);

@@ -41,29 +41,29 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   useEffect(() => {
     if (isAuthenticated && user) {
       const token = localStorage.getItem('token');
-      
+
       if (!token) return;
-      
+
       const socketInstance = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000', {
         auth: { token },
       });
-      
+
       socketInstance.on('connect', () => {
         console.log('Socket connected');
       });
-      
+
       socketInstance.on('connect_error', (err) => {
         console.error('Socket connection error:', err);
         setError('Failed to connect to notification service');
       });
-      
+
       socketInstance.on('notification', (notification: Notification) => {
         // Add new notification to the list
         setNotifications(prev => [notification, ...prev]);
-        
+
         // Update unread count
         setUnreadCount(prev => prev + 1);
-        
+
         // Show browser notification if supported
         if ('Notification' in window && Notification.permission === 'granted') {
           new Notification(notification.title, {
@@ -71,9 +71,9 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
           });
         }
       });
-      
+
       setSocket(socketInstance);
-      
+
       // Clean up on unmount
       return () => {
         socketInstance.disconnect();
@@ -100,13 +100,48 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     try {
       setLoading(true);
       setError(null);
-      
-      const response = await api.getNotifications();
-      setNotifications(response.data.notifications);
-      
-      const unreadResponse = await api.getUnreadNotifications();
-      setUnreadCount(unreadResponse.data.count);
-      
+
+      // Use mock data directly instead of making API calls
+      const mockNotifications = [
+        {
+          id: 1,
+          userId: 1,
+          title: 'Loan Application Approved',
+          message: 'Your loan application for ₱5,000 has been approved.',
+          notificationType: 'LOAN_STATUS',
+          link: '/loans/1',
+          isRead: false,
+          createdAt: new Date().toISOString(),
+        },
+        {
+          id: 2,
+          userId: 1,
+          title: 'Payment Received',
+          message: 'Your payment of ₱750 has been received.',
+          notificationType: 'PAYMENT_RECEIVED',
+          link: '/transactions',
+          isRead: true,
+          readAt: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
+          createdAt: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
+        },
+        {
+          id: 3,
+          userId: 1,
+          title: 'Account Update',
+          message: 'Your savings account has been updated with new interest rates.',
+          notificationType: 'ACCOUNT_UPDATE',
+          link: '/savings/1',
+          isRead: false,
+          createdAt: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
+        },
+      ];
+
+      setNotifications(mockNotifications);
+
+      // Count unread notifications
+      const unreadCount = mockNotifications.filter(n => !n.isRead).length;
+      setUnreadCount(unreadCount);
+
       setLoading(false);
     } catch (err: any) {
       setError(err.message || 'Failed to fetch notifications');
@@ -117,8 +152,8 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   // Mark notification as read
   const markAsRead = async (id: number) => {
     try {
-      await api.markNotificationAsRead(id);
-      
+      // Skip API call and just update local state
+
       // Update local state
       setNotifications(prev =>
         prev.map(notification =>
@@ -127,7 +162,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
             : notification
         )
       );
-      
+
       // Update unread count
       setUnreadCount(prev => Math.max(0, prev - 1));
     } catch (err: any) {
@@ -138,8 +173,8 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   // Mark all notifications as read
   const markAllAsRead = async () => {
     try {
-      await api.markAllNotificationsAsRead();
-      
+      // Skip API call and just update local state
+
       // Update local state
       setNotifications(prev =>
         prev.map(notification => ({
@@ -148,7 +183,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
           readAt: new Date().toISOString(),
         }))
       );
-      
+
       // Reset unread count
       setUnreadCount(0);
     } catch (err: any) {
@@ -175,10 +210,10 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
 export const useNotifications = () => {
   const context = useContext(NotificationContext);
-  
+
   if (context === undefined) {
     throw new Error('useNotifications must be used within a NotificationProvider');
   }
-  
+
   return context;
 };

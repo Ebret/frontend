@@ -10,7 +10,7 @@ const NotificationBell: React.FC = () => {
   const router = useRouter();
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
   const { config } = useWhiteLabel();
-  
+
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -53,9 +53,9 @@ const NotificationBell: React.FC = () => {
     if (!notification.isRead) {
       await markAsRead(notification.id);
     }
-    
+
     setIsOpen(false);
-    
+
     if (notification.link) {
       router.push(notification.link);
     }
@@ -77,7 +77,7 @@ const NotificationBell: React.FC = () => {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              d="M9 12h6m-6 4h6m-6-8h6M3 3h18a2 2 0 012 2v14a2 2 0 01-2 2H3a2 2 0 01-2-2V5a2 2 0 012-2z"
             />
           </svg>
         );
@@ -173,14 +173,14 @@ const NotificationBell: React.FC = () => {
             d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
           />
         </svg>
-        
+
         {unreadCount > 0 && (
           <span className="absolute top-0 right-0 block h-5 w-5 rounded-full bg-red-500 text-white text-xs font-bold flex items-center justify-center">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
       </button>
-      
+
       {isOpen && (
         <div className="origin-top-right absolute right-0 mt-2 w-80 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
           <div className="py-1">
@@ -195,7 +195,7 @@ const NotificationBell: React.FC = () => {
                 </button>
               )}
             </div>
-            
+
             <div className="max-h-96 overflow-y-auto">
               {notifications.length === 0 ? (
                 <div className="px-4 py-6 text-center text-gray-500">
@@ -235,7 +235,7 @@ const NotificationBell: React.FC = () => {
                 ))
               )}
             </div>
-            
+
             {notifications.length > 5 && (
               <div className="px-4 py-2 border-t border-gray-200 text-center">
                 <Link

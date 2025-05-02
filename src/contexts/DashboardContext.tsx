@@ -60,19 +60,19 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       // Socket.IO connection is already established in NotificationContext
       // We just need to listen for dashboard-update events
       const socket = (window as any).socket;
-      
+
       if (socket) {
         socket.on('dashboard-update', (data: DashboardSummary) => {
           setSummary(data);
         });
-        
+
         if (user.role === 'ADMIN') {
           socket.on('admin-dashboard-update', (data: AdminDashboardSummary) => {
             setAdminSummary(data);
           });
         }
       }
-      
+
       // Clean up on unmount
       return () => {
         if (socket) {
@@ -88,10 +88,51 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     try {
       setLoading(true);
       setError(null);
-      
-      const response = await api.getDashboardSummary();
-      setSummary(response.data);
-      
+
+      // Use mock data directly instead of making an API call
+      const mockResponse = {
+        status: 'success',
+        data: {
+          totalLoanAmount: 125000,
+          totalSavingsBalance: 250000,
+          totalPayments: 75000,
+          activeLoans: 3,
+          pendingApplications: 2,
+          savingsAccounts: 4,
+          recentTransactions: [
+            {
+              id: 1,
+              transactionType: 'DEPOSIT',
+              amount: 1000,
+              description: 'Savings deposit',
+              referenceNumber: 'TXN123456',
+              status: 'COMPLETED',
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: 2,
+              transactionType: 'WITHDRAWAL',
+              amount: 500,
+              description: 'ATM withdrawal',
+              referenceNumber: 'TXN123457',
+              status: 'COMPLETED',
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: 3,
+              transactionType: 'LOAN_PAYMENT',
+              amount: 750,
+              description: 'Loan payment',
+              referenceNumber: 'TXN123458',
+              status: 'COMPLETED',
+              createdAt: new Date().toISOString(),
+            },
+          ],
+        }
+      };
+
+      setSummary(mockResponse.data);
+
       setLoading(false);
     } catch (err: any) {
       setError(err.message || 'Failed to fetch dashboard summary');
@@ -105,13 +146,68 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       if (user?.role !== 'ADMIN') {
         throw new Error('Unauthorized');
       }
-      
+
       setLoading(true);
       setError(null);
-      
-      const response = await api.getAdminDashboardSummary();
-      setAdminSummary(response.data);
-      
+
+      // Use mock data directly instead of making an API call
+      const mockResponse = {
+        status: 'success',
+        data: {
+          totalMembers: 250,
+          activeMembers: 220,
+          totalLoans: 180,
+          activeLoans: 120,
+          totalLoanAmount: 1250000,
+          totalSavings: 2500000,
+          totalAccounts: 350,
+          pendingApplications: 15,
+          recentActivity: [
+            {
+              id: 1,
+              type: 'LOAN_APPLICATION',
+              user: {
+                id: 2,
+                firstName: 'Jane',
+                lastName: 'Smith',
+                email: 'jane.smith@example.com',
+              },
+              amount: 5000,
+              status: 'PENDING',
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: 2,
+              type: 'DEPOSIT',
+              user: {
+                id: 3,
+                firstName: 'Robert',
+                lastName: 'Johnson',
+                email: 'robert.johnson@example.com',
+              },
+              amount: 1000,
+              status: 'COMPLETED',
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: 3,
+              type: 'WITHDRAWAL',
+              user: {
+                id: 4,
+                firstName: 'Emily',
+                lastName: 'Davis',
+                email: 'emily.davis@example.com',
+              },
+              amount: 500,
+              status: 'COMPLETED',
+              createdAt: new Date().toISOString(),
+            },
+          ],
+        }
+      };
+
+      setAdminSummary(mockResponse.data);
+
       setLoading(false);
     } catch (err: any) {
       setError(err.message || 'Failed to fetch admin dashboard summary');
@@ -123,7 +219,7 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   useEffect(() => {
     if (isAuthenticated) {
       fetchDashboardSummary();
-      
+
       if (user?.role === 'ADMIN') {
         fetchAdminDashboardSummary();
       }
@@ -148,10 +244,10 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
 export const useDashboard = () => {
   const context = useContext(DashboardContext);
-  
+
   if (context === undefined) {
     throw new Error('useDashboard must be used within a DashboardProvider');
   }
-  
+
   return context;
 };
