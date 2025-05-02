@@ -26,6 +26,7 @@ import LoadingButton from '@/components/LoadingButton';
 import FormSelect from '@/components/FormSelect';
 import FormInput from '@/components/FormInput';
 import FormCard from '@/components/FormCard';
+import PredefinedTestUsers from '@/components/development/PredefinedTestUsers';
 import ConfirmationDialog from '@/components/ConfirmationDialog';
 
 const TestUsersPage: React.FC = () => {
@@ -242,6 +243,12 @@ const TestUsersPage: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-6">Test Users Management</h1>
 
+        {/* Predefined Test Users Section */}
+        <div className="mb-8">
+          <PredefinedTestUsers />
+        </div>
+
+        <h2 className="text-xl font-semibold mb-4">Create Custom Test Users</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormCard
             title="Create Test User"
@@ -680,7 +687,7 @@ const TestUsersPage: React.FC = () => {
                                     </div>
                                     <div>
                                       <p className="font-medium text-gray-500">Wallet Balance</p>
-                                      <p>${selectedUser.walletBalance?.toFixed(2)}</p>
+                                      <p>₱{selectedUser.walletBalance?.toFixed(2)}</p>
                                     </div>
                                   </>
                                 )}
