@@ -16,13 +16,13 @@ const DamayanDashboard = () => {
   useEffect(() => {
     const loadDamayanData = async () => {
       if (!user) return;
-      
+
       setIsLoading(true);
       try {
         // Fetch user's Damayan summary
         const summaryData = await fetchUserDamayanSummary(user.id);
         setUserSummary(summaryData);
-        
+
         // Fetch fund statistics if there are any contributions
         if (summaryData.recentActivity.contributions.length > 0) {
           const fundId = summaryData.recentActivity.contributions[0].damayanFundId;
@@ -36,7 +36,7 @@ const DamayanDashboard = () => {
         setIsLoading(false);
       }
     };
-    
+
     loadDamayanData();
   }, [user]);
 
@@ -56,7 +56,7 @@ const DamayanDashboard = () => {
           Overview of your Damayan contributions and community support
         </p>
       </div>
-      
+
       <div className="px-4 py-5 sm:p-6">
         {/* Tabs */}
         <div className="border-b border-gray-200 mb-6">
@@ -93,7 +93,7 @@ const DamayanDashboard = () => {
             </button>
           </nav>
         </div>
-        
+
         {/* Overview Tab */}
         {activeTab === 'overview' && userSummary && (
           <div>
@@ -105,7 +105,7 @@ const DamayanDashboard = () => {
                   From {userSummary.summary.contributionsCount} contributions
                 </p>
               </div>
-              
+
               <div className="bg-gray-50 rounded-lg p-4">
                 <h4 className="text-sm font-medium text-gray-500">Assistance Received</h4>
                 <p className="mt-1 text-2xl font-semibold text-gray-900">₱{userSummary.summary.totalAssistanceReceived.toLocaleString()}</p>
@@ -113,7 +113,7 @@ const DamayanDashboard = () => {
                   From {userSummary.summary.assistanceReceivedCount} requests
                 </p>
               </div>
-              
+
               <div className="bg-gray-50 rounded-lg p-4">
                 <h4 className="text-sm font-medium text-gray-500">Pending Requests</h4>
                 <p className="mt-1 text-2xl font-semibold text-gray-900">{userSummary.summary.pendingRequestsCount}</p>
@@ -122,7 +122,7 @@ const DamayanDashboard = () => {
                 </p>
               </div>
             </div>
-            
+
             {fundStatistics && (
               <div className="bg-blue-50 rounded-lg p-4 mb-6">
                 <h4 className="text-sm font-medium text-blue-800">Damayan Fund Status</h4>
@@ -143,7 +143,7 @@ const DamayanDashboard = () => {
                 </div>
               </div>
             )}
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Recent Contributions */}
               <div>
@@ -172,7 +172,7 @@ const DamayanDashboard = () => {
                   <p className="text-sm text-gray-500 italic">No contributions yet</p>
                 )}
               </div>
-              
+
               {/* Recent Assistance */}
               <div>
                 <h4 className="text-sm font-medium text-gray-700 mb-2">Recent Assistance</h4>
@@ -208,7 +208,7 @@ const DamayanDashboard = () => {
                 )}
               </div>
             </div>
-            
+
             <div className="mt-6 flex justify-center space-x-4">
               <a
                 href="/damayan/contribute"
@@ -222,15 +222,43 @@ const DamayanDashboard = () => {
               >
                 Request Assistance
               </a>
+              <a
+                href="/damayan/settings"
+                className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                <svg className="mr-1.5 h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
+                </svg>
+                Settings
+              </a>
+              <a
+                href="/damayan/notifications"
+                className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                <svg className="mr-1.5 h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
+                </svg>
+                Notifications
+              </a>
+              <a
+                href="/damayan/history"
+                className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                <svg className="mr-1.5 h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                  <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                </svg>
+                View History
+              </a>
             </div>
           </div>
         )}
-        
+
         {/* Contributions Tab */}
         {activeTab === 'contributions' && userSummary && (
           <div>
             <h4 className="text-lg font-medium text-gray-900 mb-4">My Contributions</h4>
-            
+
             {userSummary.recentActivity.contributions.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
@@ -301,12 +329,12 @@ const DamayanDashboard = () => {
             )}
           </div>
         )}
-        
+
         {/* Assistance Tab */}
         {activeTab === 'assistance' && userSummary && (
           <div>
             <h4 className="text-lg font-medium text-gray-900 mb-4">Assistance History</h4>
-            
+
             {userSummary.recentActivity.assistance.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">

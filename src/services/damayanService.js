@@ -182,3 +182,64 @@ export const fetchUserDamayanSummary = async (userId) => {
     throw error;
   }
 };
+
+/**
+ * Get user's Damayan settings
+ * @param {number} userId - User ID
+ * @returns {Promise<Object>} - User's Damayan settings
+ */
+export const getUserDamayanSettings = async (userId) => {
+  try {
+    const response = await api.get(`/damayan/users/${userId}/settings`);
+    return response.data.data;
+  } catch (error) {
+    console.error('Error fetching user Damayan settings:', error);
+    throw error;
+  }
+};
+
+/**
+ * Update user's Damayan settings
+ * @param {number} userId - User ID
+ * @param {Object} settingsData - Settings data
+ * @returns {Promise<Object>} - Updated settings
+ */
+export const updateUserDamayanSettings = async (userId, settingsData) => {
+  try {
+    const response = await api.put(`/damayan/users/${userId}/settings`, settingsData);
+    return response.data.data;
+  } catch (error) {
+    console.error('Error updating user Damayan settings:', error);
+    throw error;
+  }
+};
+
+/**
+ * Generate Damayan report
+ * @param {Object} params - Report parameters
+ * @returns {Promise<Object>} - Report data
+ */
+export const generateDamayanReport = async (params) => {
+  try {
+    const response = await api.get('/damayan/reports/generate', { params });
+    return response.data.data;
+  } catch (error) {
+    console.error('Error generating Damayan report:', error);
+    throw error;
+  }
+};
+
+/**
+ * Fetch member participation data for a fund
+ * @param {number} fundId - Fund ID
+ * @returns {Promise<Object>} - Member participation data
+ */
+export const fetchMemberParticipation = async (fundId) => {
+  try {
+    const response = await api.get(`/damayan/funds/${fundId}/members`);
+    return response.data.data;
+  } catch (error) {
+    console.error('Error fetching member participation:', error);
+    throw error;
+  }
+};

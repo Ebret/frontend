@@ -6,6 +6,7 @@ import Layout from '@/components/Layout';
 import { useAuth } from '@/contexts/AuthContext';
 import RealTimeDashboard from '@/components/dashboard/RealTimeDashboard';
 import LoanStatistics from '@/components/dashboard/LoanStatistics';
+import DamayanWidget from '@/components/damayan/DamayanWidget';
 
 const DashboardPage: React.FC = () => {
   const router = useRouter();
@@ -252,6 +253,11 @@ const DashboardPage: React.FC = () => {
                           </a>
                         </div>
                       </div>
+                    </div>
+
+                    {/* Damayan Widget */}
+                    <div className="lg:col-span-3">
+                      <DamayanWidget />
                     </div>
                   </div>
                 </div>

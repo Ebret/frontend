@@ -5,9 +5,9 @@ import { format } from 'date-fns';
 import { toast } from 'react-hot-toast';
 import Layout from '@/components/Layout';
 import { useAuth } from '@/contexts/AuthContext';
-import { 
-  getAllDamayanFunds, 
-  fetchDamayanFundStatistics, 
+import {
+  getAllDamayanFunds,
+  fetchDamayanFundStatistics,
   fetchPendingAssistanceRequests,
   reviewAssistanceRequest,
   disburseAssistance
@@ -32,22 +32,22 @@ const AdminDamayanPage = () => {
     approvedById: user?.id
   });
   const [showReviewModal, setShowReviewModal] = useState(false);
-  
+
   useEffect(() => {
     const loadData = async () => {
       try {
         // Load all active funds
         const fundsData = await getAllDamayanFunds({ status: 'ACTIVE' });
         setFunds(fundsData);
-        
+
         if (fundsData.length > 0) {
           // Select the first fund by default
           setSelectedFund(fundsData[0]);
-          
+
           // Load fund statistics
           const statsData = await fetchDamayanFundStatistics(fundsData[0].id);
           setFundStatistics(statsData);
-          
+
           // Load pending requests
           const requestsData = await fetchPendingAssistanceRequests({
             cooperativeId: fundsData[0].cooperativeId
@@ -61,20 +61,20 @@ const AdminDamayanPage = () => {
         setIsLoading(false);
       }
     };
-    
+
     loadData();
   }, []);
-  
+
   const handleFundChange = async (fundId) => {
     const fund = funds.find(f => f.id === parseInt(fundId, 10));
     setSelectedFund(fund);
-    
+
     setIsLoading(true);
     try {
       // Load fund statistics
       const statsData = await fetchDamayanFundStatistics(fund.id);
       setFundStatistics(statsData);
-      
+
       // Load pending requests
       const requestsData = await fetchPendingAssistanceRequests({
         cooperativeId: fund.cooperativeId
@@ -87,7 +87,7 @@ const AdminDamayanPage = () => {
       setIsLoading(false);
     }
   };
-  
+
   const openReviewModal = (request) => {
     setSelectedRequest(request);
     setReviewData({
@@ -98,12 +98,12 @@ const AdminDamayanPage = () => {
     });
     setShowReviewModal(true);
   };
-  
+
   const closeReviewModal = () => {
     setSelectedRequest(null);
     setShowReviewModal(false);
   };
-  
+
   const handleReviewInputChange = (e) => {
     const { name, value } = e.target;
     setReviewData(prev => ({
@@ -111,46 +111,46 @@ const AdminDamayanPage = () => {
       [name]: value
     }));
   };
-  
+
   const handleStatusChange = (status) => {
     setReviewData(prev => ({
       ...prev,
       status
     }));
   };
-  
+
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!selectedRequest) return;
-    
+
     // Validate inputs
     if (reviewData.status === 'APPROVED' && (!reviewData.amount || parseFloat(reviewData.amount) <= 0)) {
       toast.error('Please enter a valid amount for approval');
       return;
     }
-    
+
     if (reviewData.status === 'REJECTED' && !reviewData.rejectionReason) {
       toast.error('Please provide a reason for rejection');
       return;
     }
-    
+
     setIsProcessing(true);
     try {
       await reviewAssistanceRequest(selectedRequest.id, reviewData);
-      
+
       toast.success(`Assistance request ${reviewData.status.toLowerCase()} successfully`);
-      
+
       // Refresh pending requests
       const requestsData = await fetchPendingAssistanceRequests({
         cooperativeId: selectedFund.cooperativeId
       });
       setPendingRequests(requestsData.requests);
-      
+
       // Refresh fund statistics
       const statsData = await fetchDamayanFundStatistics(selectedFund.id);
       setFundStatistics(statsData);
-      
+
       closeReviewModal();
     } catch (error) {
       console.error('Error reviewing request:', error);
@@ -159,14 +159,14 @@ const AdminDamayanPage = () => {
       setIsProcessing(false);
     }
   };
-  
+
   const handleDisburse = async (requestId) => {
     setIsProcessing(true);
     try {
       await disburseAssistance(requestId, {});
-      
+
       toast.success('Assistance disbursed successfully');
-      
+
       // Refresh fund statistics
       const statsData = await fetchDamayanFundStatistics(selectedFund.id);
       setFundStatistics(statsData);
@@ -177,7 +177,7 @@ const AdminDamayanPage = () => {
       setIsProcessing(false);
     }
   };
-  
+
   if (isLoading) {
     return (
       <Layout>
@@ -191,16 +191,49 @@ const AdminDamayanPage = () => {
       </Layout>
     );
   }
-  
+
   return (
     <Layout>
       <div className="py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-2xl font-semibold text-gray-900">Damayan Management</h1>
-          <p className="mt-1 text-sm text-gray-500">
-            Manage Damayan funds and assistance requests
-          </p>
-          
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900">Damayan Management</h1>
+              <p className="mt-1 text-sm text-gray-500">
+                Manage Damayan funds and assistance requests
+              </p>
+            </div>
+            <div className="flex space-x-3">
+              <a
+                href="/admin/damayan/funds"
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                <svg className="mr-1.5 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Manage Funds
+              </a>
+              <a
+                href="/admin/damayan/members"
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                <svg className="mr-1.5 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                Member Participation
+              </a>
+              <a
+                href="/admin/damayan/reports"
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                <svg className="mr-1.5 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Reports
+              </a>
+            </div>
+          </div>
+
           {funds.length === 0 ? (
             <div className="mt-6 bg-white shadow-md rounded-lg p-6 text-center">
               <h3 className="text-lg font-medium text-gray-900 mb-2">No Active Damayan Funds</h3>
@@ -232,7 +265,7 @@ const AdminDamayanPage = () => {
                   ))}
                 </select>
               </div>
-              
+
               {fundStatistics && (
                 <div className="bg-white shadow-md rounded-lg overflow-hidden mb-6">
                   <div className="px-4 py-5 sm:px-6 border-b border-gray-200">
@@ -241,14 +274,14 @@ const AdminDamayanPage = () => {
                       Overview of {selectedFund.name}
                     </p>
                   </div>
-                  
+
                   <div className="px-4 py-5 sm:p-6">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                       <div className="bg-gray-50 rounded-lg p-4">
                         <h4 className="text-sm font-medium text-gray-500">Current Balance</h4>
                         <p className="mt-1 text-2xl font-semibold text-gray-900">₱{fundStatistics.statistics.currentBalance.toLocaleString()}</p>
                       </div>
-                      
+
                       <div className="bg-gray-50 rounded-lg p-4">
                         <h4 className="text-sm font-medium text-gray-500">Total Contributions</h4>
                         <p className="mt-1 text-2xl font-semibold text-gray-900">₱{fundStatistics.statistics.totalContributions.toLocaleString()}</p>
@@ -256,7 +289,7 @@ const AdminDamayanPage = () => {
                           From {fundStatistics.statistics.contributionsCount} contributions
                         </p>
                       </div>
-                      
+
                       <div className="bg-gray-50 rounded-lg p-4">
                         <h4 className="text-sm font-medium text-gray-500">Total Disbursements</h4>
                         <p className="mt-1 text-2xl font-semibold text-gray-900">₱{fundStatistics.statistics.totalDisbursements.toLocaleString()}</p>
@@ -265,7 +298,7 @@ const AdminDamayanPage = () => {
                         </p>
                       </div>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <h4 className="text-sm font-medium text-gray-700 mb-2">Recent Contributions</h4>
@@ -278,7 +311,7 @@ const AdminDamayanPage = () => {
                                     <div>
                                       <p className="text-sm font-medium text-gray-900">₱{contribution.amount.toLocaleString()}</p>
                                       <p className="text-xs text-gray-500">
-                                        {contribution.user.firstName} {contribution.user.lastName} • 
+                                        {contribution.user.firstName} {contribution.user.lastName} •
                                         {format(new Date(contribution.contributionDate), ' MMM d, yyyy')}
                                       </p>
                                     </div>
@@ -296,7 +329,7 @@ const AdminDamayanPage = () => {
                           <p className="text-sm text-gray-500 italic">No recent contributions</p>
                         )}
                       </div>
-                      
+
                       <div>
                         <h4 className="text-sm font-medium text-gray-700 mb-2">Recent Disbursements</h4>
                         {fundStatistics.recentActivity.disbursements.length > 0 ? (
@@ -308,7 +341,7 @@ const AdminDamayanPage = () => {
                                     <div>
                                       <p className="text-sm font-medium text-gray-900">₱{disbursement.amount.toLocaleString()}</p>
                                       <p className="text-xs text-gray-500">
-                                        {disbursement.user.firstName} {disbursement.user.lastName} • 
+                                        {disbursement.user.firstName} {disbursement.user.lastName} •
                                         {format(new Date(disbursement.disbursementDate), ' MMM d, yyyy')}
                                       </p>
                                     </div>
@@ -325,7 +358,7 @@ const AdminDamayanPage = () => {
                   </div>
                 </div>
               )}
-              
+
               <div className="bg-white shadow-md rounded-lg overflow-hidden">
                 <div className="px-4 py-5 sm:px-6 border-b border-gray-200">
                   <h3 className="text-lg font-medium text-gray-900">Pending Assistance Requests</h3>
@@ -333,7 +366,7 @@ const AdminDamayanPage = () => {
                     Review and process assistance requests
                   </p>
                 </div>
-                
+
                 <div className="px-4 py-5 sm:p-6">
                   {pendingRequests.length > 0 ? (
                     <div className="overflow-x-auto">
@@ -407,7 +440,7 @@ const AdminDamayanPage = () => {
           )}
         </div>
       </div>
-      
+
       {/* Review Modal */}
       {showReviewModal && selectedRequest && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -426,7 +459,7 @@ const AdminDamayanPage = () => {
                 </svg>
               </button>
             </div>
-            
+
             <div className="mb-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
@@ -445,14 +478,14 @@ const AdminDamayanPage = () => {
                   </p>
                 </div>
               </div>
-              
+
               <div className="mb-4">
                 <h4 className="text-sm font-medium text-gray-500">Reason for Assistance</h4>
                 <p className="text-sm text-gray-900 mt-1">
                   {selectedRequest.reason}
                 </p>
               </div>
-              
+
               {selectedRequest.documents.length > 0 && (
                 <div>
                   <h4 className="text-sm font-medium text-gray-500 mb-2">Supporting Documents</h4>
@@ -481,7 +514,7 @@ const AdminDamayanPage = () => {
                 </div>
               )}
             </div>
-            
+
             <form onSubmit={handleReviewSubmit}>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -516,7 +549,7 @@ const AdminDamayanPage = () => {
                   </div>
                 </div>
               </div>
-              
+
               {reviewData.status === 'APPROVED' && (
                 <div className="mb-4">
                   <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">
@@ -541,7 +574,7 @@ const AdminDamayanPage = () => {
                   </div>
                 </div>
               )}
-              
+
               {reviewData.status === 'REJECTED' && (
                 <div className="mb-4">
                   <label htmlFor="rejectionReason" className="block text-sm font-medium text-gray-700 mb-1">
@@ -562,7 +595,7 @@ const AdminDamayanPage = () => {
                   </p>
                 </div>
               )}
-              
+
               <div className="flex justify-end space-x-3 mt-6">
                 <button
                   type="button"
