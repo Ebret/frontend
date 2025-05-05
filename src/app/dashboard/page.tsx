@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Layout from '@/components/Layout';
 import { useAuth } from '@/contexts/AuthContext';
 import RealTimeDashboard from '@/components/dashboard/RealTimeDashboard';
+import LoanStatistics from '@/components/dashboard/LoanStatistics';
 
 const DashboardPage: React.FC = () => {
   const router = useRouter();
@@ -109,141 +110,147 @@ const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* Dashboard Widgets */}
-                <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                  {/* Account Summary Widget */}
-                  <div className="bg-white overflow-hidden shadow rounded-lg">
-                    <div className="px-4 py-5 sm:p-6">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0 bg-blue-500 rounded-md p-3">
-                          <svg
-                            className="h-6 w-6 text-white"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                            />
-                          </svg>
-                        </div>
-                        <div className="ml-5 w-0 flex-1">
-                          <dl>
-                            <dt className="text-sm font-medium text-gray-500 truncate">
-                              Total Savings
-                            </dt>
-                            <dd>
-                              <div className="text-lg font-medium text-gray-900">
-                                ₱0.00
-                              </div>
-                            </dd>
-                          </dl>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="bg-gray-50 px-4 py-4 sm:px-6">
-                      <div className="text-sm">
-                        <a
-                          href="#"
-                          className="font-medium text-blue-600 hover:text-blue-500"
-                        >
-                          View all accounts
-                        </a>
-                      </div>
-                    </div>
-                  </div>
+                <div className="mt-8 grid grid-cols-1 gap-5">
+                  {/* Loan Statistics */}
+                  <LoanStatistics />
 
-                  {/* Loans Widget */}
-                  <div className="bg-white overflow-hidden shadow rounded-lg">
-                    <div className="px-4 py-5 sm:p-6">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0 bg-green-500 rounded-md p-3">
-                          <svg
-                            className="h-6 w-6 text-white"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
+                  {/* Other Widgets */}
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                    {/* Account Summary Widget */}
+                    <div className="bg-white overflow-hidden shadow rounded-lg">
+                      <div className="px-4 py-5 sm:p-6">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0 bg-blue-500 rounded-md p-3">
+                            <svg
+                              className="h-6 w-6 text-white"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                              />
+                            </svg>
+                          </div>
+                          <div className="ml-5 w-0 flex-1">
+                            <dl>
+                              <dt className="text-sm font-medium text-gray-500 truncate">
+                                Total Savings
+                              </dt>
+                              <dd>
+                                <div className="text-lg font-medium text-gray-900">
+                                  ₱0.00
+                                </div>
+                              </dd>
+                            </dl>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-gray-50 px-4 py-4 sm:px-6">
+                        <div className="text-sm">
+                          <a
+                            href="/savings"
+                            className="font-medium text-blue-600 hover:text-blue-500"
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 12h6m-6 4h6m-6-8h6M3 3h18a2 2 0 012 2v14a2 2 0 01-2 2H3a2 2 0 01-2-2V5a2 2 0 012-2z"
-                            />
-                          </svg>
-                        </div>
-                        <div className="ml-5 w-0 flex-1">
-                          <dl>
-                            <dt className="text-sm font-medium text-gray-500 truncate">
-                              Active Loans
-                            </dt>
-                            <dd>
-                              <div className="text-lg font-medium text-gray-900">
-                                0
-                              </div>
-                            </dd>
-                          </dl>
+                            View all accounts
+                          </a>
                         </div>
                       </div>
                     </div>
-                    <div className="bg-gray-50 px-4 py-4 sm:px-6">
-                      <div className="text-sm">
-                        <a
-                          href="#"
-                          className="font-medium text-blue-600 hover:text-blue-500"
-                        >
-                          View all loans
-                        </a>
-                      </div>
-                    </div>
-                  </div>
 
-                  {/* Transactions Widget */}
-                  <div className="bg-white overflow-hidden shadow rounded-lg">
-                    <div className="px-4 py-5 sm:p-6">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0 bg-purple-500 rounded-md p-3">
-                          <svg
-                            className="h-6 w-6 text-white"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                            />
-                          </svg>
+                    {/* Loans Widget */}
+                    <div className="bg-white overflow-hidden shadow rounded-lg">
+                      <div className="px-4 py-5 sm:p-6">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0 bg-green-500 rounded-md p-3">
+                            <svg
+                              className="h-6 w-6 text-white"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 12h6m-6 4h6m-6-8h6M3 3h18a2 2 0 012 2v14a2 2 0 01-2 2H3a2 2 0 01-2-2V5a2 2 0 012-2z"
+                              />
+                            </svg>
+                          </div>
+                          <div className="ml-5 w-0 flex-1">
+                            <dl>
+                              <dt className="text-sm font-medium text-gray-500 truncate">
+                                Apply for Loan
+                              </dt>
+                              <dd>
+                                <div className="text-sm text-gray-700 mt-1">
+                                  Get quick access to funds with our competitive loan products
+                                </div>
+                              </dd>
+                            </dl>
+                          </div>
                         </div>
-                        <div className="ml-5 w-0 flex-1">
-                          <dl>
-                            <dt className="text-sm font-medium text-gray-500 truncate">
-                              Recent Transactions
-                            </dt>
-                            <dd>
-                              <div className="text-lg font-medium text-gray-900">
-                                0
-                              </div>
-                            </dd>
-                          </dl>
+                      </div>
+                      <div className="bg-gray-50 px-4 py-4 sm:px-6">
+                        <div className="text-sm">
+                          <a
+                            href="/loans/apply"
+                            className="font-medium text-blue-600 hover:text-blue-500"
+                          >
+                            Apply now
+                          </a>
                         </div>
                       </div>
                     </div>
-                    <div className="bg-gray-50 px-4 py-4 sm:px-6">
-                      <div className="text-sm">
-                        <a
-                          href="#"
-                          className="font-medium text-blue-600 hover:text-blue-500"
-                        >
-                          View all transactions
-                        </a>
+
+                    {/* Transactions Widget */}
+                    <div className="bg-white overflow-hidden shadow rounded-lg">
+                      <div className="px-4 py-5 sm:p-6">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0 bg-purple-500 rounded-md p-3">
+                            <svg
+                              className="h-6 w-6 text-white"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                              />
+                            </svg>
+                          </div>
+                          <div className="ml-5 w-0 flex-1">
+                            <dl>
+                              <dt className="text-sm font-medium text-gray-500 truncate">
+                                Recent Transactions
+                              </dt>
+                              <dd>
+                                <div className="text-lg font-medium text-gray-900">
+                                  0
+                                </div>
+                              </dd>
+                            </dl>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-gray-50 px-4 py-4 sm:px-6">
+                        <div className="text-sm">
+                          <a
+                            href="/transactions"
+                            className="font-medium text-blue-600 hover:text-blue-500"
+                          >
+                            View all transactions
+                          </a>
+                        </div>
                       </div>
                     </div>
                   </div>

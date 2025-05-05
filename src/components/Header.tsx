@@ -56,6 +56,40 @@ const Header: React.FC = () => {
                   >
                     Dashboard
                   </Link>
+                  <Link
+                    href="/loans"
+                    className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  >
+                    Loans
+                  </Link>
+                  <Link
+                    href="/savings"
+                    className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  >
+                    Savings
+                  </Link>
+                  <Link
+                    href="/damayan"
+                    className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  >
+                    Damayan
+                  </Link>
+                  {(user?.role === 'ADMIN' || user?.role === 'CREDIT_OFFICER' || user?.role === 'MANAGER' || user?.role === 'ACCOUNTANT') && (
+                    <Link
+                      href="/admin/loans"
+                      className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    >
+                      Loan Management
+                    </Link>
+                  )}
+                  {(user?.role === 'ADMIN' || user?.role === 'MANAGER' || user?.role === 'BOARD_MEMBER') && (
+                    <Link
+                      href="/admin/damayan"
+                      className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    >
+                      Damayan Admin
+                    </Link>
+                  )}
                   {user?.role === 'ADMIN' && (
                     <Link
                       href="/admin"
