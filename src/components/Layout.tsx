@@ -3,6 +3,7 @@
 import React from 'react';
 import Header from './Header';
 import Footer from './Footer';
+import ConnectionStatus from './ConnectionStatus';
 import { useWhiteLabel } from '@/contexts/WhiteLabelContext';
 
 interface LayoutProps {
@@ -25,6 +26,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <Header />
       <main className="flex-grow">{children}</main>
       <Footer />
+      <ConnectionStatus />
     </div>
   );
 };

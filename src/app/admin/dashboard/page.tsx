@@ -7,12 +7,14 @@ import { api } from '@/lib/api';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AdminSidebar from '@/components/AdminSidebar';
 import { Permission } from '@/lib/roles';
+import EnhancedAdminDashboard from '@/components/dashboard/EnhancedAdminDashboard';
 
 const AdminDashboardPage: React.FC = () => {
   const { user } = useAuth();
   const [dashboardData, setDashboardData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [dashboardType, setDashboardType] = useState('basic'); // 'basic' or 'enhanced'
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -43,13 +45,29 @@ const AdminDashboardPage: React.FC = () => {
     );
   }
 
+  // If enhanced dashboard is selected, render it directly
+  if (dashboardType === 'enhanced') {
+    return (
+      <ProtectedRoute>
+        <EnhancedAdminDashboard />
+      </ProtectedRoute>
+    );
+  }
+
+  // Otherwise, render the basic dashboard
   return (
     <ProtectedRoute>
       <Layout sidebar={<AdminSidebar />}>
         <div className="py-10">
           <header>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
               <h1 className="text-3xl font-bold leading-tight text-gray-900">Admin Dashboard</h1>
+              <button
+                onClick={() => setDashboardType(dashboardType === 'basic' ? 'enhanced' : 'basic')}
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                Switch to {dashboardType === 'basic' ? 'Enhanced' : 'Basic'} Dashboard
+              </button>
             </div>
           </header>
           <main>

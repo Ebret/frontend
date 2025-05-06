@@ -6,6 +6,7 @@ import { WhiteLabelProvider } from "@/contexts/WhiteLabelContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { DashboardProvider } from "@/contexts/DashboardContext";
 import { CookieConsentProvider } from "@/contexts/CookieConsentContext";
+import { WebSocketProvider } from "@/contexts/WebSocketContext";
 import AuditLogInitializer from "./AuditLogInitializer";
 
 
@@ -38,12 +39,14 @@ export default function RootLayout({
         <AuthProvider>
           <WhiteLabelProvider>
             <NotificationProvider>
-              <DashboardProvider>
-                <CookieConsentProvider>
-                  <AuditLogInitializer />
-                  {children}
-                </CookieConsentProvider>
-              </DashboardProvider>
+              <WebSocketProvider>
+                <DashboardProvider>
+                  <CookieConsentProvider>
+                    <AuditLogInitializer />
+                    {children}
+                  </CookieConsentProvider>
+                </DashboardProvider>
+              </WebSocketProvider>
             </NotificationProvider>
           </WhiteLabelProvider>
         </AuthProvider>
