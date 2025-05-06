@@ -1,0 +1,124 @@
+/* Accessibility Styles */
+
+/* Font Size */
+html.text-sm {
+  font-size: 14px;
+}
+
+html.text-base {
+  font-size: 16px;
+}
+
+html.text-lg {
+  font-size: 18px;
+}
+
+html.text-xl {
+  font-size: 20px;
+}
+
+/* High Contrast Mode */
+html.high-contrast {
+  filter: contrast(1.5);
+}
+
+html.high-contrast body {
+  background-color: white;
+  color: black;
+}
+
+html.high-contrast a {
+  color: #0000EE;
+  text-decoration: underline;
+}
+
+html.high-contrast button,
+html.high-contrast .btn {
+  border: 2px solid black;
+  color: black;
+  background-color: white;
+}
+
+html.high-contrast input,
+html.high-contrast select,
+html.high-contrast textarea {
+  border: 2px solid black;
+  background-color: white;
+  color: black;
+}
+
+/* Inverted Colors */
+html.inverted {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+html.inverted img,
+html.inverted video {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* Reduced Motion */
+html.reduce-motion *,
+html.reduce-motion *::before,
+html.reduce-motion *::after {
+  animation-duration: 0.001s !important;
+  animation-delay: 0.001s !important;
+  transition-duration: 0.001s !important;
+  transition-delay: 0.001s !important;
+}
+
+/* Enhanced Focus Indicators */
+html.focus-visible :focus {
+  outline: 3px solid #2563eb !important;
+  outline-offset: 3px !important;
+}
+
+html.focus-visible button:focus,
+html.focus-visible a:focus,
+html.focus-visible input:focus,
+html.focus-visible select:focus,
+html.focus-visible textarea:focus {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.5) !important;
+}
+
+/* Skip to content link - always visible when focused */
+.skip-to-content {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #2563eb;
+  color: white;
+  padding: 8px;
+  z-index: 100;
+  transition: top 0.2s;
+}
+
+.skip-to-content:focus {
+  top: 0;
+}
+
+/* Screen reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Not screen reader only when focused */
+.sr-only-focusable:not(:focus) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

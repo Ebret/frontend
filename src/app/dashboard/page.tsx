@@ -4,14 +4,16 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Layout from '@/components/Layout';
 import { useAuth } from '@/contexts/AuthContext';
+import { DashboardProvider } from '@/contexts/DashboardContext';
 import RealTimeDashboard from '@/components/dashboard/RealTimeDashboard';
 import LoanStatistics from '@/components/dashboard/LoanStatistics';
 import DamayanWidget from '@/components/damayan/DamayanWidget';
+import EnhancedMemberDashboard from '@/components/dashboard/EnhancedMemberDashboard';
 
 const DashboardPage: React.FC = () => {
   const router = useRouter();
   const { user, isAuthenticated, isLoading } = useAuth();
-  const [showRealTimeDashboard, setShowRealTimeDashboard] = useState(false);
+  const [dashboardType, setDashboardType] = useState('basic'); // 'basic', 'realtime', or 'enhanced'
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -40,21 +42,57 @@ const DashboardPage: React.FC = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center">
               <h1 className="text-3xl font-bold leading-tight text-gray-900">Dashboard</h1>
-              <button
-                onClick={() => setShowRealTimeDashboard(!showRealTimeDashboard)}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                {showRealTimeDashboard ? 'Show Basic Dashboard' : 'Show Real-Time Dashboard'}
-              </button>
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => setDashboardType('basic')}
+                  className={`inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                    dashboardType === 'basic'
+                      ? 'text-white bg-blue-600 hover:bg-blue-700 border-transparent'
+                      : 'text-gray-700 bg-white hover:bg-gray-50 border-gray-300'
+                  }`}
+                >
+                  Basic Dashboard
+                </button>
+                <button
+                  onClick={() => setDashboardType('realtime')}
+                  className={`inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                    dashboardType === 'realtime'
+                      ? 'text-white bg-blue-600 hover:bg-blue-700 border-transparent'
+                      : 'text-gray-700 bg-white hover:bg-gray-50 border-gray-300'
+                  }`}
+                >
+                  Real-Time Dashboard
+                </button>
+                <button
+                  onClick={() => setDashboardType('enhanced')}
+                  className={`inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                    dashboardType === 'enhanced'
+                      ? 'text-white bg-blue-600 hover:bg-blue-700 border-transparent'
+                      : 'text-gray-700 bg-white hover:bg-gray-50 border-gray-300'
+                  }`}
+                >
+                  Enhanced Dashboard
+                </button>
+              </div>
             </div>
           </div>
         </header>
         <main>
-          {showRealTimeDashboard ? (
+          {dashboardType === 'realtime' && (
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
               <RealTimeDashboard />
             </div>
-          ) : (
+          )}
+
+          {dashboardType === 'enhanced' && (
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+              <DashboardProvider>
+                <EnhancedMemberDashboard />
+              </DashboardProvider>
+            </div>
+          )}
+
+          {dashboardType === 'basic' && (
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
               <div className="px-4 py-8 sm:px-0">
                 <div className="bg-white shadow overflow-hidden sm:rounded-lg">

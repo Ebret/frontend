@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import MobileNavigation from './MobileNavigation';
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
+import { t } from '@/utils/i18n';
+import { trackEvent } from '@/utils/analytics';
 
 const LandingHeader = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -31,6 +35,11 @@ const LandingHeader = () => {
       router.events.off('routeChangeComplete', handleRouteChange);
     };
   }, [router]);
+
+  // Track navigation clicks
+  const handleNavClick = (linkName) => {
+    trackEvent('Navigation', 'Link Click', linkName);
+  };
 
   return (
     <header
@@ -69,32 +78,36 @@ const LandingHeader = () => {
               className={`font-medium ${
                 isScrolled ? 'text-gray-700 hover:text-blue-600' : 'text-white hover:text-blue-100'
               } transition-colors`}
+              onClick={() => handleNavClick('Features')}
             >
-              Features
+              {t('common.features', router.locale)}
             </Link>
             <Link
               href="/pricing"
               className={`font-medium ${
                 isScrolled ? 'text-gray-700 hover:text-blue-600' : 'text-white hover:text-blue-100'
               } transition-colors`}
+              onClick={() => handleNavClick('Pricing')}
             >
-              Pricing
+              {t('common.pricing', router.locale)}
             </Link>
             <Link
               href="/about"
               className={`font-medium ${
                 isScrolled ? 'text-gray-700 hover:text-blue-600' : 'text-white hover:text-blue-100'
               } transition-colors`}
+              onClick={() => handleNavClick('About Us')}
             >
-              About Us
+              {t('common.about', router.locale)}
             </Link>
             <Link
               href="/contact"
               className={`font-medium ${
                 isScrolled ? 'text-gray-700 hover:text-blue-600' : 'text-white hover:text-blue-100'
               } transition-colors`}
+              onClick={() => handleNavClick('Contact')}
             >
-              Contact
+              {t('common.contact', router.locale)}
             </Link>
           </nav>
 
@@ -107,8 +120,9 @@ const LandingHeader = () => {
                   ? 'text-blue-600 hover:text-blue-700'
                   : 'text-white hover:text-blue-100'
               } transition-colors`}
+              onClick={() => handleNavClick('Login')}
             >
-              Log In
+              {t('common.login', router.locale)}
             </Link>
             <Link
               href="/register"
@@ -117,9 +131,13 @@ const LandingHeader = () => {
                   ? 'bg-blue-600 text-white hover:bg-blue-700'
                   : 'bg-white text-blue-600 hover:bg-blue-50'
               }`}
+              onClick={() => handleNavClick('Sign Up')}
             >
-              Sign Up
+              {t('common.signup', router.locale)}
             </Link>
+
+            {/* Language Switcher */}
+            <LanguageSwitcher className="ml-2" />
           </div>
 
           {/* Mobile Menu Button */}
@@ -172,50 +190,8 @@ const LandingHeader = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      <div
-        className={`md:hidden ${isMobileMenuOpen ? 'block' : 'hidden'}`}
-        id="mobile-menu"
-      >
-        <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white shadow-lg">
-          <Link
-            href="/features"
-            className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-          >
-            Features
-          </Link>
-          <Link
-            href="/pricing"
-            className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-          >
-            Pricing
-          </Link>
-          <Link
-            href="/about"
-            className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-          >
-            About Us
-          </Link>
-          <Link
-            href="/contact"
-            className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-          >
-            Contact
-          </Link>
-          <Link
-            href="/login"
-            className="block px-3 py-2 rounded-md text-base font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-          >
-            Log In
-          </Link>
-          <Link
-            href="/register"
-            className="block px-3 py-2 rounded-md text-base font-medium text-white bg-blue-600 hover:bg-blue-700"
-          >
-            Sign Up
-          </Link>
-        </div>
-      </div>
+      {/* Mobile Navigation Menu */}
+      <MobileNavigation isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
     </header>
   );
 };

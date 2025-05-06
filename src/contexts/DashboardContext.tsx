@@ -22,6 +22,23 @@ interface DashboardSummary {
   pendingApplications: number;
   savingsAccounts: number;
   recentTransactions: Transaction[];
+  // Enhanced data for improved dashboards
+  nextPaymentDue?: string;
+  nextPaymentAmount?: number;
+  daysUntilNextPayment?: number;
+  creditScore?: number;
+  savingsGrowth?: number;
+  loanBalance?: number;
+  availableCredit?: number;
+  interestPaid?: number;
+  principalPaid?: number;
+  totalLoans?: number;
+  loanUtilization?: number;
+  paymentHistory?: {
+    onTime: number;
+    late: number;
+    missed: number;
+  };
 }
 
 interface AdminDashboardSummary {
@@ -128,6 +145,23 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
               createdAt: new Date().toISOString(),
             },
           ],
+          // Enhanced data for improved dashboards
+          nextPaymentDue: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
+          nextPaymentAmount: 5000,
+          daysUntilNextPayment: 7,
+          creditScore: 720,
+          savingsGrowth: 2.5,
+          loanBalance: 75000,
+          availableCredit: 50000,
+          interestPaid: 12500,
+          principalPaid: 25000,
+          totalLoans: 3,
+          loanUtilization: 0.6, // 60% of available credit used
+          paymentHistory: {
+            onTime: 24,
+            late: 2,
+            missed: 0,
+          }
         }
       };
 
