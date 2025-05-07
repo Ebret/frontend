@@ -8,6 +8,7 @@ import { DashboardProvider } from '@/contexts/DashboardContext';
 import RealTimeDashboard from '@/components/dashboard/RealTimeDashboard';
 import LoanStatistics from '@/components/dashboard/LoanStatistics';
 import DamayanWidget from '@/components/damayan/DamayanWidget';
+import TransactionHistoryWidget from '@/components/transactions/TransactionHistoryWidget';
 import EnhancedMemberDashboard from '@/components/dashboard/EnhancedMemberDashboard';
 
 const DashboardPage: React.FC = () => {
@@ -248,49 +249,12 @@ const DashboardPage: React.FC = () => {
                     </div>
 
                     {/* Transactions Widget */}
-                    <div className="bg-white overflow-hidden shadow rounded-lg">
-                      <div className="px-4 py-5 sm:p-6">
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0 bg-purple-500 rounded-md p-3">
-                            <svg
-                              className="h-6 w-6 text-white"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                              />
-                            </svg>
-                          </div>
-                          <div className="ml-5 w-0 flex-1">
-                            <dl>
-                              <dt className="text-sm font-medium text-gray-500 truncate">
-                                Recent Transactions
-                              </dt>
-                              <dd>
-                                <div className="text-lg font-medium text-gray-900">
-                                  0
-                                </div>
-                              </dd>
-                            </dl>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="bg-gray-50 px-4 py-4 sm:px-6">
-                        <div className="text-sm">
-                          <a
-                            href="/transactions"
-                            className="font-medium text-blue-600 hover:text-blue-500"
-                          >
-                            View all transactions
-                          </a>
-                        </div>
-                      </div>
+                    <div className="sm:col-span-2">
+                      <TransactionHistoryWidget
+                        title="Recent Transactions"
+                        limit={3}
+                        showViewAll={true}
+                      />
                     </div>
 
                     {/* Damayan Widget */}
