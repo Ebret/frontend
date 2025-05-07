@@ -3,7 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useWhiteLabel } from '@/contexts/WhiteLabelContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { getAllDamayanFunds, fetchUserDamayanSummary } from '@/services/damayanService';
 import { formatCurrency } from '@/utils/formatters';
+import { toast } from 'react-hot-toast';
 
 interface DamayanFund {
   id: string;
@@ -24,62 +27,112 @@ interface DamayanFund {
 
 const DamayanWidget: React.FC = () => {
   const { config } = useWhiteLabel();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeFunds, setActiveFunds] = useState<DamayanFund[]>([]);
+  const [userSummary, setUserSummary] = useState<any>(null);
 
   useEffect(() => {
-    const fetchActiveFunds = async () => {
+    const fetchData = async () => {
+      if (!user) return;
+
       try {
         setLoading(true);
-        
-        // In a real app, this would be an API call
-        // For now, we'll use mock data
+
+        // In a real app, these would be API calls
+        // For now, we'll use mock data but structure it like real API calls
         await new Promise(resolve => setTimeout(resolve, 800)); // Simulate API delay
-        
-        // Mock active funds data
-        const mockFunds: DamayanFund[] = [
-          {
-            id: '1',
-            name: 'Medical Assistance Fund',
-            description: 'Fund for members requiring medical assistance',
-            totalAmount: 150000,
-            targetAmount: 200000,
-            contributionsCount: 75,
-            status: 'ACTIVE',
-            createdAt: '2023-01-15T00:00:00Z',
-            updatedAt: '2023-07-01T00:00:00Z',
-            beneficiary: {
-              id: '101',
-              name: 'Juan Dela Cruz',
-              reason: 'Hospitalization due to pneumonia'
+
+        try {
+          // Get active funds
+          // const fundsData = await getAllDamayanFunds({ status: 'ACTIVE' });
+          // setActiveFunds(fundsData);
+
+          // Mock active funds data
+          const mockFunds: DamayanFund[] = [
+            {
+              id: '1',
+              name: 'Medical Assistance Fund',
+              description: 'Fund for members requiring medical assistance',
+              totalAmount: 150000,
+              targetAmount: 200000,
+              contributionsCount: 75,
+              status: 'ACTIVE',
+              createdAt: '2023-01-15T00:00:00Z',
+              updatedAt: '2023-07-01T00:00:00Z',
+              beneficiary: {
+                id: '101',
+                name: 'Juan Dela Cruz',
+                reason: 'Hospitalization due to pneumonia'
+              }
+            },
+            {
+              id: '3',
+              name: 'Education Support Fund',
+              description: 'Fund to support children of members for educational expenses',
+              totalAmount: 100000,
+              targetAmount: 300000,
+              contributionsCount: 50,
+              status: 'ACTIVE',
+              createdAt: '2023-03-20T00:00:00Z',
+              updatedAt: '2023-07-05T00:00:00Z'
             }
-          },
-          {
-            id: '3',
-            name: 'Education Support Fund',
-            description: 'Fund to support children of members for educational expenses',
-            totalAmount: 100000,
-            targetAmount: 300000,
-            contributionsCount: 50,
-            status: 'ACTIVE',
-            createdAt: '2023-03-20T00:00:00Z',
-            updatedAt: '2023-07-05T00:00:00Z'
-          }
-        ];
-        
-        setActiveFunds(mockFunds);
+          ];
+
+          setActiveFunds(mockFunds);
+        } catch (fundError) {
+          console.error('Error fetching Damayan funds:', fundError);
+          toast.error('Failed to load Damayan funds');
+        }
+
+        try {
+          // Get user summary
+          // const summaryData = await fetchUserDamayanSummary(user.id);
+          // setUserSummary(summaryData);
+
+          // Mock user summary data
+          const mockSummary = {
+            summary: {
+              totalContributions: 5000,
+              contributionsCount: 5,
+              totalAssistanceReceived: 0,
+              assistanceReceivedCount: 0,
+              pendingRequestsCount: 1
+            },
+            recentActivity: {
+              contributions: [
+                {
+                  id: '1001',
+                  amount: 1000,
+                  contributionDate: '2023-06-01T00:00:00Z',
+                  damayanFundId: '1',
+                  damayanFund: {
+                    name: 'Medical Assistance Fund'
+                  }
+                }
+              ],
+              assistance: []
+            }
+          };
+
+          setUserSummary(mockSummary);
+        } catch (summaryError) {
+          console.error('Error fetching user Damayan summary:', summaryError);
+          // Don't show toast for this error as it's not critical
+        }
+
         setError(null);
       } catch (err) {
-        console.error('Error fetching active Damayan funds:', err);
-        setError('Failed to load Damayan funds. Please try again later.');
+        console.error('Error fetching Damayan data:', err);
+        setError('Failed to load Damayan data. Please try again later.');
       } finally {
         setLoading(false);
       }
     };
-    
-    fetchActiveFunds();
-  }, []);
+
+    fetchData();
+  }, [user]);
 
   // Calculate progress percentage
   const getProgressPercentage = (current: number, target: number) => {
@@ -104,7 +157,7 @@ const DamayanWidget: React.FC = () => {
           View All
         </Link>
       </div>
-      
+
       <div className="border-t border-gray-200 px-4 py-5 sm:p-6">
         {loading ? (
           <div className="flex justify-center items-center h-32">
@@ -156,16 +209,16 @@ const DamayanWidget: React.FC = () => {
                     Active
                   </span>
                 </div>
-                
+
                 <p className="mt-1 text-sm text-gray-500 line-clamp-2">{fund.description}</p>
-                
+
                 {fund.beneficiary && (
                   <div className="mt-2 text-sm">
                     <span className="font-medium">Beneficiary:</span> {fund.beneficiary.name}
                     <p className="text-gray-500 text-xs mt-0.5">{fund.beneficiary.reason}</p>
                   </div>
                 )}
-                
+
                 <div className="mt-3">
                   <div className="flex justify-between text-sm">
                     <span>{formatCurrency(fund.totalAmount)}</span>
@@ -184,7 +237,7 @@ const DamayanWidget: React.FC = () => {
                     {fund.contributionsCount} contributions so far
                   </p>
                 </div>
-                
+
                 <div className="mt-4 flex justify-end">
                   <Link
                     href={`/damayan/funds/${fund.id}`}
@@ -195,7 +248,7 @@ const DamayanWidget: React.FC = () => {
                   </Link>
                   <span className="mx-2 text-gray-300">|</span>
                   <Link
-                    href={`/damayan/contribute/${fund.id}`}
+                    href={`/damayan/funds/${fund.id}`}
                     className="text-sm font-medium hover:underline"
                     style={{ color: config?.primaryColor || '#3b82f6' }}
                   >
@@ -204,22 +257,36 @@ const DamayanWidget: React.FC = () => {
                 </div>
               </div>
             ))}
-            
+
             <div className="flex justify-between items-center pt-4 border-t border-gray-200">
-              <Link
-                href="/damayan/request"
-                className="text-sm font-medium hover:underline"
-                style={{ color: config?.primaryColor || '#3b82f6' }}
-              >
-                Request assistance
-              </Link>
-              <Link
-                href="/damayan"
-                className="text-sm font-medium hover:underline"
-                style={{ color: config?.primaryColor || '#3b82f6' }}
-              >
-                View all funds
-              </Link>
+              <div className="flex flex-col">
+                <Link
+                  href="/damayan/request"
+                  className="text-sm font-medium hover:underline"
+                  style={{ color: config?.primaryColor || '#3b82f6' }}
+                >
+                  Request assistance
+                </Link>
+                {userSummary && userSummary.summary.pendingRequestsCount > 0 && (
+                  <span className="text-xs text-gray-500 mt-1">
+                    You have {userSummary.summary.pendingRequestsCount} pending request(s)
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-col items-end">
+                <Link
+                  href="/damayan"
+                  className="text-sm font-medium hover:underline"
+                  style={{ color: config?.primaryColor || '#3b82f6' }}
+                >
+                  View all funds
+                </Link>
+                {userSummary && (
+                  <span className="text-xs text-gray-500 mt-1">
+                    You've contributed {formatCurrency(userSummary.summary.totalContributions)}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         )}
