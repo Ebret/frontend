@@ -1,5 +1,13 @@
 /**
- * Internationalization utility for managing translations
+ * Enhanced Internationalization Utilities for Credit Cooperative System
+ *
+ * This module provides comprehensive utilities for internationalization including:
+ * - Translation functions
+ * - Language detection and switching
+ * - Date and number formatting
+ * - Currency formatting (with Philippine Peso ₱ symbol)
+ * - Relative time formatting
+ * - Percentage formatting
  */
 
 // Default language
@@ -7,6 +15,53 @@ const DEFAULT_LOCALE = 'en';
 
 // Available languages
 export const AVAILABLE_LOCALES = ['en', 'fil', 'ceb', 'ilo'];
+
+// Language names for display
+export const LANGUAGE_NAMES = {
+  en: 'English',
+  fil: 'Filipino',
+  ceb: 'Cebuano',
+  ilo: 'Ilocano',
+};
+
+// Map our locale codes to Intl locale codes
+export const LOCALE_MAP = {
+  en: 'en-US',
+  fil: 'fil-PH',
+  ceb: 'ceb-PH',
+  ilo: 'ilo-PH',
+};
+
+// Get browser language
+export const getBrowserLanguage = () => {
+  if (typeof navigator === 'undefined') return DEFAULT_LOCALE;
+
+  const browserLang = navigator.language.split('-')[0];
+  return AVAILABLE_LOCALES.includes(browserLang) ? browserLang : DEFAULT_LOCALE;
+};
+
+// Get user's preferred language from localStorage
+export const getUserLanguage = () => {
+  if (typeof localStorage === 'undefined') return DEFAULT_LOCALE;
+
+  const savedLocale = localStorage.getItem('userLanguage');
+  return savedLocale && AVAILABLE_LOCALES.includes(savedLocale) ? savedLocale : getBrowserLanguage();
+};
+
+// Set user's preferred language
+export const setUserLanguage = (locale) => {
+  if (typeof localStorage === 'undefined') return;
+
+  const selectedLocale = AVAILABLE_LOCALES.includes(locale) ? locale : DEFAULT_LOCALE;
+  localStorage.setItem('userLanguage', selectedLocale);
+
+  // Update HTML lang attribute
+  if (typeof document !== 'undefined') {
+    document.documentElement.lang = selectedLocale;
+  }
+
+  return selectedLocale;
+};
 
 // Translations
 const translations = {
@@ -155,10 +210,10 @@ const translations = {
 export const t = (key, locale = DEFAULT_LOCALE, params = {}) => {
   // Use the specified locale or fall back to default
   const selectedLocale = AVAILABLE_LOCALES.includes(locale) ? locale : DEFAULT_LOCALE;
-  
+
   // Split the key into parts
   const parts = key.split('.');
-  
+
   // Navigate through the translations object
   let translation = translations[selectedLocale];
   for (const part of parts) {
@@ -172,7 +227,7 @@ export const t = (key, locale = DEFAULT_LOCALE, params = {}) => {
     }
     translation = translation[part];
   }
-  
+
   // Replace parameters in the translation
   if (typeof translation === 'string' && params) {
     return Object.entries(params).reduce(
@@ -180,7 +235,7 @@ export const t = (key, locale = DEFAULT_LOCALE, params = {}) => {
       translation
     );
   }
-  
+
   return translation;
 };
 
@@ -193,16 +248,7 @@ export const t = (key, locale = DEFAULT_LOCALE, params = {}) => {
  */
 export const formatNumber = (number, locale = DEFAULT_LOCALE, options = {}) => {
   const selectedLocale = AVAILABLE_LOCALES.includes(locale) ? locale : DEFAULT_LOCALE;
-  
-  // Map our locale codes to Intl locale codes
-  const localeMap = {
-    en: 'en-US',
-    fil: 'fil-PH',
-    ceb: 'ceb-PH',
-    ilo: 'ilo-PH',
-  };
-  
-  return new Intl.NumberFormat(localeMap[selectedLocale], options).format(number);
+  return new Intl.NumberFormat(LOCALE_MAP[selectedLocale], options).format(number);
 };
 
 /**
@@ -210,14 +256,24 @@ export const formatNumber = (number, locale = DEFAULT_LOCALE, options = {}) => {
  * @param {number} amount - The amount to format
  * @param {string} currency - The currency code (default: PHP)
  * @param {string} locale - The locale to use
- * @returns {string} - The formatted currency amount
+ * @returns {string} - The formatted currency amount with Philippine Peso symbol (₱)
  */
 export const formatCurrency = (amount, currency = 'PHP', locale = DEFAULT_LOCALE) => {
-  return formatNumber(amount, locale, {
+  // Use the formatNumber function with currency style
+  const formatted = formatNumber(amount, locale, {
     style: 'currency',
     currency,
     currencyDisplay: 'symbol',
   });
+
+  // For PHP currency, ensure we use the proper Peso symbol (₱)
+  if (currency === 'PHP') {
+    // Some browsers/systems might not show the correct peso symbol
+    // Replace with the proper peso symbol if needed
+    return formatted.replace(/PHP|P/, '₱');
+  }
+
+  return formatted;
 };
 
 /**
@@ -229,21 +285,101 @@ export const formatCurrency = (amount, currency = 'PHP', locale = DEFAULT_LOCALE
  */
 export const formatDate = (date, locale = DEFAULT_LOCALE, options = {}) => {
   const selectedLocale = AVAILABLE_LOCALES.includes(locale) ? locale : DEFAULT_LOCALE;
-  
-  // Map our locale codes to Intl locale codes
-  const localeMap = {
-    en: 'en-US',
-    fil: 'fil-PH',
-    ceb: 'ceb-PH',
-    ilo: 'ilo-PH',
-  };
-  
   const dateObj = date instanceof Date ? date : new Date(date);
-  
-  return new Intl.DateTimeFormat(localeMap[selectedLocale], {
+
+  return new Intl.DateTimeFormat(LOCALE_MAP[selectedLocale], {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
     ...options,
   }).format(dateObj);
+};
+
+/**
+ * Format a date and time according to the locale
+ * @param {Date|string|number} date - The date to format
+ * @param {string} locale - The locale to use
+ * @param {object} options - Intl.DateTimeFormat options
+ * @returns {string} - The formatted date and time
+ */
+export const formatDateTime = (date, locale = DEFAULT_LOCALE, options = {}) => {
+  const selectedLocale = AVAILABLE_LOCALES.includes(locale) ? locale : DEFAULT_LOCALE;
+  const dateObj = date instanceof Date ? date : new Date(date);
+
+  return new Intl.DateTimeFormat(LOCALE_MAP[selectedLocale], {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+    ...options,
+  }).format(dateObj);
+};
+
+/**
+ * Format relative time based on user locale
+ * @param {Date|string|number} date - Date to format
+ * @param {string} locale - The locale to use
+ * @returns {string} - Formatted relative time
+ */
+export const formatRelativeTime = (date, locale = DEFAULT_LOCALE) => {
+  const selectedLocale = AVAILABLE_LOCALES.includes(locale) ? locale : DEFAULT_LOCALE;
+
+  // Create date object if string or number
+  const dateObj = date instanceof Date ? date : new Date(date);
+
+  // Get time difference in seconds
+  const now = new Date();
+  const diffSeconds = Math.floor((now - dateObj) / 1000);
+
+  // Get absolute difference
+  const absDiffSeconds = Math.abs(diffSeconds);
+
+  // Define time units
+  const units = [
+    { unit: 'year', seconds: 31536000 },
+    { unit: 'month', seconds: 2592000 },
+    { unit: 'day', seconds: 86400 },
+    { unit: 'hour', seconds: 3600 },
+    { unit: 'minute', seconds: 60 },
+    { unit: 'second', seconds: 1 },
+  ];
+
+  // Find appropriate unit
+  for (const { unit, seconds } of units) {
+    if (absDiffSeconds >= seconds) {
+      const value = Math.floor(absDiffSeconds / seconds);
+      const rtf = new Intl.RelativeTimeFormat(LOCALE_MAP[selectedLocale], { numeric: 'auto' });
+      return rtf.format(diffSeconds < 0 ? value : -value, unit);
+    }
+  }
+
+  // Fallback for "just now"
+  const rtf = new Intl.RelativeTimeFormat(LOCALE_MAP[selectedLocale], { numeric: 'auto' });
+  return rtf.format(0, 'second');
+};
+
+/**
+ * Format percentage based on user locale
+ * @param {number} number - Number to format (0-1)
+ * @param {string} locale - The locale to use
+ * @param {object} options - Intl.NumberFormat options
+ * @returns {string} - Formatted percentage
+ */
+export const formatPercentage = (number, locale = DEFAULT_LOCALE, options = {}) => {
+  const selectedLocale = AVAILABLE_LOCALES.includes(locale) ? locale : DEFAULT_LOCALE;
+
+  // Default options
+  const defaultOptions = {
+    style: 'percent',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  };
+
+  // Merge options
+  const formatOptions = { ...defaultOptions, ...options };
+
+  // Format percentage
+  return new Intl.NumberFormat(LOCALE_MAP[selectedLocale], formatOptions).format(number);
 };
