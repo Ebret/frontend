@@ -3,7 +3,18 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useAuth } from './AuthContext';
-import { useNotifications, Notification } from './NotificationContext';
+import { useNotifications } from './NotificationContext';
+
+// Define a notification type to avoid the browser's Notification API conflict
+interface AppNotification {
+  id: string;
+  title: string;
+  message: string;
+  type: string;
+  read: boolean;
+  createdAt: string;
+  userId: string;
+}
 
 interface WebSocketContextType {
   isConnected: boolean;
@@ -66,15 +77,15 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
       });
 
       // Handle real-time notifications
-      socketInstance.on('notification', (notification: Notification) => {
+      socketInstance.on('notification', (notification: AppNotification) => {
         console.log('New notification received:', notification);
-        
+
         // Refresh notifications list
         fetchNotifications();
-        
+
         // Show browser notification if supported and permission granted
-        if ('Notification' in window && Notification.permission === 'granted') {
-          new Notification(notification.title, {
+        if ('Notification' in window && window.Notification.permission === 'granted') {
+          new window.Notification(notification.title, {
             body: notification.message,
             icon: '/logo.png',
           });
@@ -108,8 +119,8 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
 
   // Request notification permission
   useEffect(() => {
-    if ('Notification' in window && Notification.permission !== 'denied') {
-      Notification.requestPermission();
+    if ('Notification' in window && window.Notification.permission !== 'denied') {
+      window.Notification.requestPermission();
     }
   }, []);
 

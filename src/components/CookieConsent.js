@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { enableAnalytics, disableAnalytics, isAnalyticsEnabled } from '@/utils/analytics';
 
@@ -13,13 +15,13 @@ const CookieConsent = () => {
   useEffect(() => {
     // Check if user has already made a choice
     const consentGiven = localStorage.getItem('cookie-consent');
-    
+
     if (!consentGiven) {
       // Show the banner after a short delay
       const timer = setTimeout(() => {
         setIsVisible(true);
       }, 1000);
-      
+
       return () => clearTimeout(timer);
     } else {
       // Load saved preferences
@@ -27,7 +29,7 @@ const CookieConsent = () => {
         const savedPreferences = JSON.parse(localStorage.getItem('cookie-preferences'));
         if (savedPreferences) {
           setPreferences(savedPreferences);
-          
+
           // Update analytics based on saved preferences
           if (savedPreferences.analytics) {
             enableAnalytics();
@@ -47,7 +49,7 @@ const CookieConsent = () => {
       analytics: true,
       marketing: true,
     };
-    
+
     setPreferences(newPreferences);
     savePreferences(newPreferences);
     enableAnalytics();
@@ -60,7 +62,7 @@ const CookieConsent = () => {
       analytics: false,
       marketing: false,
     };
-    
+
     setPreferences(newPreferences);
     savePreferences(newPreferences);
     disableAnalytics();
@@ -69,14 +71,14 @@ const CookieConsent = () => {
 
   const handleSavePreferences = () => {
     savePreferences(preferences);
-    
+
     // Update analytics based on preferences
     if (preferences.analytics) {
       enableAnalytics();
     } else {
       disableAnalytics();
     }
-    
+
     setIsVisible(false);
     setShowPreferences(false);
   };
@@ -141,7 +143,7 @@ const CookieConsent = () => {
                 </svg>
               </button>
             </div>
-            
+
             <div className="space-y-4 mb-4">
               <div className="flex items-start">
                 <div className="flex items-center h-5">
@@ -159,7 +161,7 @@ const CookieConsent = () => {
                   <p className="text-gray-500">These cookies are essential for the website to function properly.</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start">
                 <div className="flex items-center h-5">
                   <input
@@ -176,7 +178,7 @@ const CookieConsent = () => {
                   <p className="text-gray-500">These cookies help us understand how visitors interact with our website.</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start">
                 <div className="flex items-center h-5">
                   <input
@@ -194,7 +196,7 @@ const CookieConsent = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setShowPreferences(false)}

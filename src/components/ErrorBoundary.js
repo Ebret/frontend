@@ -1,10 +1,12 @@
+'use client';
+
 import React, { Component } from 'react';
 import { toast } from 'react-hot-toast';
 
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
-    this.state = { 
+    this.state = {
       hasError: false,
       error: null,
       errorInfo: null
@@ -20,7 +22,7 @@ class ErrorBoundary extends Component {
     // Log the error to an error reporting service
     console.error('Error caught by ErrorBoundary:', error, errorInfo);
     this.setState({ errorInfo });
-    
+
     // Show a toast notification
     toast.error('Something went wrong. Please try again later.');
   }

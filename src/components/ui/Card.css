@@ -1,0 +1,226 @@
+/**
+ * Card Component Styles
+ */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg-primary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all var(--transition-default);
+}
+
+/* Card elevations */
+.card-elevation-none {
+  box-shadow: none;
+  border: 1px solid var(--color-border-light);
+}
+
+.card-elevation-sm {
+  box-shadow: var(--shadow-sm);
+}
+
+.card-elevation-md {
+  box-shadow: var(--shadow-md);
+}
+
+.card-elevation-lg {
+  box-shadow: var(--shadow-lg);
+}
+
+.card-elevation-xl {
+  box-shadow: var(--shadow-xl);
+}
+
+/* Card variants */
+.card-default {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+.card-primary {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.card-secondary {
+  background-color: var(--color-secondary);
+  color: var(--color-white);
+}
+
+.card-accent {
+  background-color: var(--color-accent);
+  color: var(--color-white);
+}
+
+.card-success {
+  background-color: var(--color-success);
+  color: var(--color-white);
+}
+
+.card-danger {
+  background-color: var(--color-danger);
+  color: var(--color-white);
+}
+
+.card-warning {
+  background-color: var(--color-warning);
+  color: var(--color-text-primary);
+}
+
+.card-info {
+  background-color: var(--color-info);
+  color: var(--color-white);
+}
+
+.card-light {
+  background-color: var(--color-gray-100);
+  color: var(--color-text-primary);
+}
+
+.card-dark {
+  background-color: var(--color-gray-800);
+  color: var(--color-white);
+}
+
+.card-outline {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-medium);
+}
+
+/* Clickable card */
+.card-clickable {
+  cursor: pointer;
+}
+
+.card-clickable:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Card header */
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md) var(--spacing-md);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.card-header-content {
+  flex: 1;
+}
+
+.card-title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: inherit;
+}
+
+.card-subtitle {
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.card-header-action {
+  margin-left: var(--spacing-md);
+}
+
+/* Card body */
+.card-body {
+  padding: var(--spacing-md);
+  flex: 1 1 auto;
+}
+
+/* Card footer */
+.card-footer {
+  padding: var(--spacing-md);
+  border-top: 1px solid var(--color-border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Card image */
+.card-image {
+  width: 100%;
+  overflow: hidden;
+}
+
+.card-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.card-image-top {
+  order: -1;
+}
+
+.card-image-bottom {
+  order: 999;
+}
+
+/* Card variants with different header/footer colors */
+.card-primary .card-header,
+.card-primary .card-footer {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.card-secondary .card-header,
+.card-secondary .card-footer {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.card-accent .card-header,
+.card-accent .card-footer {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.card-success .card-header,
+.card-success .card-footer {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.card-danger .card-header,
+.card-danger .card-footer {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.card-warning .card-header,
+.card-warning .card-footer {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.card-info .card-header,
+.card-info .card-footer {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.card-dark .card-header,
+.card-dark .card-footer {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Card subtitle color adjustments for colored cards */
+.card-primary .card-subtitle,
+.card-secondary .card-subtitle,
+.card-accent .card-subtitle,
+.card-success .card-subtitle,
+.card-danger .card-subtitle,
+.card-info .card-subtitle,
+.card-dark .card-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+}
