@@ -5,12 +5,13 @@ import AdminLayout from '@/components/admin/AdminLayout';
 import LoanRatesForm from '@/components/admin/rates/LoanRatesForm';
 import SavingsRatesForm from '@/components/admin/rates/SavingsRatesForm';
 import RetirementRatesForm from '@/components/admin/rates/RetirementRatesForm';
+import FixedDepositRatesForm from '@/components/admin/rates/FixedDepositRatesForm';
 import FeesForm from '@/components/admin/rates/FeesForm';
 import RateHistoryLog from '@/components/admin/rates/RateHistoryLog';
 
 /**
  * Rates and Fees Management Page
- * 
+ *
  * This page allows administrators to manage all rates and fees in the system:
  * - Loan interest rates
  * - Savings interest rates
@@ -22,16 +23,17 @@ import RateHistoryLog from '@/components/admin/rates/RateHistoryLog';
 const RatesAndFeesPage = () => {
   // State for active tab
   const [activeTab, setActiveTab] = useState('loans');
-  
+
   // Tabs for different rate categories
   const tabs = [
     { id: 'loans', name: 'Loan Rates' },
     { id: 'savings', name: 'Savings Rates' },
+    { id: 'fixedDeposits', name: 'Fixed Deposit Rates' },
     { id: 'retirement', name: 'Retirement Rates' },
     { id: 'fees', name: 'Fees & Charges' },
     { id: 'history', name: 'Change History' },
   ];
-  
+
   // Function to render the active tab content
   const renderTabContent = () => {
     switch (activeTab) {
@@ -39,6 +41,8 @@ const RatesAndFeesPage = () => {
         return <LoanRatesForm />;
       case 'savings':
         return <SavingsRatesForm />;
+      case 'fixedDeposits':
+        return <FixedDepositRatesForm />;
       case 'retirement':
         return <RetirementRatesForm />;
       case 'fees':
@@ -49,7 +53,7 @@ const RatesAndFeesPage = () => {
         return <LoanRatesForm />;
     }
   };
-  
+
   return (
     <AdminLayout>
       <div className="bg-white shadow overflow-hidden sm:rounded-lg">
@@ -59,7 +63,7 @@ const RatesAndFeesPage = () => {
             Configure interest rates, fees, and charges for all financial products.
           </p>
         </div>
-        
+
         {/* Tabs */}
         <div className="border-b border-gray-200">
           <nav className="-mb-px flex space-x-8 px-6" aria-label="Tabs">
@@ -80,13 +84,13 @@ const RatesAndFeesPage = () => {
             ))}
           </nav>
         </div>
-        
+
         {/* Tab content */}
         <div className="px-4 py-5 sm:p-6">
           {renderTabContent()}
         </div>
       </div>
-      
+
       {/* Help section */}
       <div className="mt-6 bg-blue-50 rounded-lg p-4 border border-blue-200">
         <div className="flex">
