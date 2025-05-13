@@ -1,12 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import AdminLayout from '@/components/admin/AdminLayout';
 import SystemSettings from '@/components/admin/settings/SystemSettings';
+import { FiCreditCard, FiShoppingBag, FiSettings } from 'react-icons/fi';
+import { useCooperative } from '@/contexts/CooperativeContext';
 
 /**
  * Admin Settings Page
- * 
+ *
  * This page allows administrators to configure various system settings:
  * - System settings (feature toggles, parameters, business rules)
  * - User roles and permissions
@@ -16,7 +19,7 @@ import SystemSettings from '@/components/admin/settings/SystemSettings';
 const AdminSettingsPage = () => {
   // State for active tab
   const [activeTab, setActiveTab] = useState('system');
-  
+
   // Tabs for different setting categories
   const tabs = [
     { id: 'system', name: 'System Settings' },
@@ -24,7 +27,7 @@ const AdminSettingsPage = () => {
     { id: 'notifications', name: 'Notifications' },
     { id: 'integrations', name: 'Integrations' },
   ];
-  
+
   // Function to render the active tab content
   const renderTabContent = () => {
     switch (activeTab) {
@@ -64,7 +67,7 @@ const AdminSettingsPage = () => {
         return <SystemSettings />;
     }
   };
-  
+
   return (
     <AdminLayout>
       <div className="bg-white shadow overflow-hidden sm:rounded-lg">
@@ -74,7 +77,7 @@ const AdminSettingsPage = () => {
             Configure system settings, user roles, notifications, and integrations.
           </p>
         </div>
-        
+
         {/* Tabs */}
         <div className="border-b border-gray-200">
           <nav className="-mb-px flex space-x-8 px-6" aria-label="Tabs">
@@ -95,7 +98,7 @@ const AdminSettingsPage = () => {
             ))}
           </nav>
         </div>
-        
+
         {/* Tab content */}
         <div className="px-4 py-5 sm:p-6">
           {renderTabContent()}

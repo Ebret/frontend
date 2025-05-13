@@ -1,16 +1,22 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
+import { FiCreditCard, FiShoppingBag, FiSettings, FiShield, FiUsers, FiDollarSign, FiCalendar } from 'react-icons/fi';
+import { useCooperative } from '@/contexts/CooperativeContext';
 
 /**
  * System Settings Component
- * 
+ *
  * Allows administrators to configure system-wide settings:
  * - Feature toggles (enable/disable features)
  * - System parameters (loan limits, interest calculations, etc.)
  * - Business rules (approval workflows, validation rules, etc.)
  */
 const SystemSettings = () => {
+  // Get cooperative type from context
+  const { cooperativeType, isLoading: isCooperativeLoading } = useCooperative();
+
   // Initial settings data
   const initialSettings = {
     featureToggles: [
@@ -36,65 +42,65 @@ const SystemSettings = () => {
       { id: 'min_credit_score', name: 'Minimum Credit Score for Loan Approval', value: 650, type: 'number', description: 'Minimum credit score required for loan approval' },
     ]
   };
-  
+
   // State for settings
   const [settings, setSettings] = useState(initialSettings);
   const [activeTab, setActiveTab] = useState('featureToggles');
   const [isEditing, setIsEditing] = useState(false);
   const [editedSettings, setEditedSettings] = useState(initialSettings);
-  
+
   // Tabs for different setting categories
   const tabs = [
     { id: 'featureToggles', name: 'Feature Toggles' },
     { id: 'loanParameters', name: 'Loan Parameters' },
     { id: 'businessRules', name: 'Business Rules' },
   ];
-  
+
   // Handle toggle change
   const handleToggleChange = (id) => {
     if (!isEditing) return;
-    
+
     setEditedSettings({
       ...editedSettings,
-      featureToggles: editedSettings.featureToggles.map(toggle => 
+      featureToggles: editedSettings.featureToggles.map(toggle =>
         toggle.id === id ? { ...toggle, enabled: !toggle.enabled } : toggle
       )
     });
   };
-  
+
   // Handle parameter value change
   const handleParameterChange = (id, value, category) => {
     if (!isEditing) return;
-    
+
     setEditedSettings({
       ...editedSettings,
-      [category]: editedSettings[category].map(param => 
+      [category]: editedSettings[category].map(param =>
         param.id === id ? { ...param, value: value } : param
       )
     });
   };
-  
+
   // Start editing
   const handleStartEditing = () => {
     setIsEditing(true);
     setEditedSettings(settings);
   };
-  
+
   // Cancel editing
   const handleCancelEditing = () => {
     setIsEditing(false);
     setEditedSettings(settings);
   };
-  
+
   // Save changes
   const handleSaveChanges = () => {
     setSettings(editedSettings);
     setIsEditing(false);
-    
+
     // Here you would typically make an API call to save the settings
     alert('Settings saved successfully!');
   };
-  
+
   // Format value based on type
   const formatValue = (param) => {
     switch (param.type) {
@@ -108,7 +114,7 @@ const SystemSettings = () => {
         return param.value.toString();
     }
   };
-  
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -142,7 +148,40 @@ const SystemSettings = () => {
           )}
         </div>
       </div>
-      
+
+      {/* Cooperative Type Card */}
+      <div className="mb-6 bg-white shadow overflow-hidden sm:rounded-lg border border-gray-200">
+        <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
+          <div className="flex items-center">
+            {!isCooperativeLoading && cooperativeType && (
+              <div className="mr-3">
+                {cooperativeType === 'CREDIT' ? (
+                  <FiCreditCard className="h-6 w-6 text-blue-500" />
+                ) : (
+                  <FiShoppingBag className="h-6 w-6 text-green-500" />
+                )}
+              </div>
+            )}
+            <div>
+              <h3 className="text-lg leading-6 font-medium text-gray-900">Cooperative Type</h3>
+              <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                {!isCooperativeLoading && cooperativeType && (
+                  cooperativeType === 'CREDIT'
+                    ? 'Your system is configured as a Credit Cooperative'
+                    : 'Your system is configured as a Multi-Purpose Cooperative'
+                )}
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/admin/settings/cooperative-type"
+            className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Change Type
+          </Link>
+        </div>
+      </div>
+
       {/* Tabs */}
       <div className="border-b border-gray-200">
         <nav className="-mb-px flex space-x-8" aria-label="Tabs">
@@ -163,7 +202,7 @@ const SystemSettings = () => {
           ))}
         </nav>
       </div>
-      
+
       {/* Tab content */}
       <div className="mt-6">
         {activeTab === 'featureToggles' && (
@@ -171,7 +210,7 @@ const SystemSettings = () => {
             <p className="text-sm text-gray-500">
               Enable or disable features in the system. Disabled features will not be visible to users.
             </p>
-            
+
             <div className="bg-white shadow overflow-hidden sm:rounded-md">
               <ul className="divide-y divide-gray-200">
                 {(isEditing ? editedSettings : settings).featureToggles.map((toggle) => (
@@ -212,13 +251,13 @@ const SystemSettings = () => {
             </div>
           </div>
         )}
-        
+
         {activeTab === 'loanParameters' && (
           <div className="space-y-6">
             <p className="text-sm text-gray-500">
               Configure parameters that control loan calculations, limits, and eligibility.
             </p>
-            
+
             <div className="bg-white shadow overflow-hidden sm:rounded-md">
               <ul className="divide-y divide-gray-200">
                 {(isEditing ? editedSettings : settings).loanParameters.map((param) => (
@@ -256,13 +295,13 @@ const SystemSettings = () => {
             </div>
           </div>
         )}
-        
+
         {activeTab === 'businessRules' && (
           <div className="space-y-6">
             <p className="text-sm text-gray-500">
               Configure business rules that control approval workflows, eligibility criteria, and other operational aspects.
             </p>
-            
+
             <div className="bg-white shadow overflow-hidden sm:rounded-md">
               <ul className="divide-y divide-gray-200">
                 {(isEditing ? editedSettings : settings).businessRules.map((rule) => (
@@ -301,7 +340,97 @@ const SystemSettings = () => {
           </div>
         )}
       </div>
-      
+
+      {/* Additional Settings Links */}
+      <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Compliance Settings */}
+        <div className="bg-white overflow-hidden shadow rounded-lg border border-gray-200">
+          <div className="p-5">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <FiShield className="h-6 w-6 text-purple-500" />
+              </div>
+              <div className="ml-5 w-0 flex-1">
+                <dl>
+                  <dt className="text-sm font-medium text-gray-500 truncate">Compliance Settings</dt>
+                  <dd className="text-sm font-medium text-gray-900">
+                    Regulatory and compliance configuration
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+          <div className="bg-gray-50 px-5 py-3">
+            <div className="text-sm">
+              <Link
+                href="/admin/settings/compliance"
+                className="font-medium text-blue-700 hover:text-blue-900"
+              >
+                Manage compliance settings
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* User Management */}
+        <div className="bg-white overflow-hidden shadow rounded-lg border border-gray-200">
+          <div className="p-5">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <FiUsers className="h-6 w-6 text-blue-500" />
+              </div>
+              <div className="ml-5 w-0 flex-1">
+                <dl>
+                  <dt className="text-sm font-medium text-gray-500 truncate">User Management</dt>
+                  <dd className="text-sm font-medium text-gray-900">
+                    Manage users and roles
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+          <div className="bg-gray-50 px-5 py-3">
+            <div className="text-sm">
+              <Link
+                href="/admin/users"
+                className="font-medium text-blue-700 hover:text-blue-900"
+              >
+                Manage users
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Financial Settings */}
+        <div className="bg-white overflow-hidden shadow rounded-lg border border-gray-200">
+          <div className="p-5">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <FiDollarSign className="h-6 w-6 text-green-500" />
+              </div>
+              <div className="ml-5 w-0 flex-1">
+                <dl>
+                  <dt className="text-sm font-medium text-gray-500 truncate">Financial Settings</dt>
+                  <dd className="text-sm font-medium text-gray-900">
+                    Interest rates and fees
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+          <div className="bg-gray-50 px-5 py-3">
+            <div className="text-sm">
+              <Link
+                href="/admin/rates"
+                className="font-medium text-blue-700 hover:text-blue-900"
+              >
+                Manage financial settings
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Help section */}
       <div className="mt-8 bg-blue-50 rounded-lg p-4 border border-blue-200">
         <div className="flex">
