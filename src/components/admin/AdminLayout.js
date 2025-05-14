@@ -1,10 +1,27 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FiCreditCard, FiShoppingBag, FiPackage, FiShoppingCart, FiTruck } from 'react-icons/fi';
+import {
+  FiCreditCard,
+  FiShoppingBag,
+  FiPackage,
+  FiShoppingCart,
+  FiTruck,
+  FiMenu,
+  FiX,
+  FiChevronDown,
+  FiChevronUp,
+  FiHome,
+  FiBell
+} from 'react-icons/fi';
 import { useCooperative } from '@/contexts/CooperativeContext';
+import { useScreenSize } from '@/components/common/ResponsiveWrapper';
+
+// Dynamically import components for better code splitting
+const AccessibilityMenu = lazy(() => import('@/components/common/AccessibilityMenu'));
+const SkipToContent = lazy(() => import('@/components/common/SkipToContent'));
 
 /**
  * Admin Dashboard Layout Component
@@ -19,7 +36,38 @@ const AdminLayout = ({ children }) => {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [expandedGroups, setExpandedGroups] = useState({});
   const { cooperativeType, cooperativeName, isLoading, isMultiPurpose } = useCooperative();
+  const screenSize = useScreenSize();
+
+  // Close sidebar when navigating on mobile
+  useEffect(() => {
+    if (screenSize === 'mobile') {
+      setSidebarOpen(false);
+    }
+  }, [pathname, screenSize]);
+
+  // Close user menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (userMenuOpen && !event.target.closest('#user-menu-button')) {
+        setUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [userMenuOpen]);
+
+  // Toggle navigation group expansion
+  const toggleGroup = (group) => {
+    setExpandedGroups(prev => ({
+      ...prev,
+      [group]: !prev[group]
+    }));
+  };
 
   // Common navigation items for all cooperative types
   const commonNavigation = [
@@ -29,6 +77,7 @@ const AdminLayout = ({ children }) => {
     { name: 'Savings', href: '/admin/savings', icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', feature: 'common' },
     { name: 'Collateral', href: '/admin/collateral', icon: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4', feature: 'common' },
     { name: 'Rates & Fees', href: '/admin/rates', icon: 'M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z', feature: 'common' },
+    { name: 'Financial', href: '/admin/financial/settings', icon: 'M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z', feature: 'common' },
     { name: 'Approvals', href: '/admin/approvals', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2', feature: 'common' },
     { name: 'Users', href: '/admin/users', icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', feature: 'common' },
     { name: 'Audit Log', href: '/admin/audit', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', feature: 'common' },
@@ -72,63 +121,200 @@ const AdminLayout = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-gray-100">
+      {/* Skip to content link for accessibility */}
+      <Suspense fallback={<div className="sr-only">Loading accessibility navigation...</div>}>
+        <SkipToContent contentId="main-content" />
+      </Suspense>
+
+      {/* Accessibility menu */}
+      <Suspense fallback={<div className="fixed bottom-4 right-4 z-50 w-10 h-10 bg-indigo-600 rounded-full"></div>}>
+        <AccessibilityMenu />
+      </Suspense>
+
       {/* Mobile sidebar */}
-      <div className={`fixed inset-0 flex z-40 md:hidden ${sidebarOpen ? 'block' : 'hidden'}`} role="dialog" aria-modal="true">
+      <div
+        className={`fixed inset-0 flex z-50 md:hidden transition-opacity duration-300 ease-in-out ${
+          sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+        role="dialog"
+        aria-modal="true"
+      >
         {/* Overlay */}
         <div
-          className="fixed inset-0 bg-gray-600 bg-opacity-75"
+          className="fixed inset-0 bg-gray-600 bg-opacity-75 transition-opacity duration-300 ease-in-out"
           aria-hidden="true"
           onClick={() => setSidebarOpen(false)}
         ></div>
 
         {/* Sidebar */}
-        <div className="relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-indigo-700">
+        <div
+          className={`relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-indigo-700 transform transition-transform duration-300 ease-in-out ${
+            sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
           <div className="absolute top-0 right-0 -mr-12 pt-2">
             <button
               type="button"
               className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
               onClick={() => setSidebarOpen(false)}
+              aria-label="Close sidebar"
             >
-              <span className="sr-only">Close sidebar</span>
-              <svg className="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <FiX className="h-6 w-6 text-white" />
             </button>
           </div>
 
           <div className="flex-shrink-0 flex items-center px-4">
-            <span className="text-white text-2xl font-bold">Coop Admin</span>
+            <span className="text-white text-xl font-bold">Cooperative Admin</span>
           </div>
+
+          {!isLoading && (
+            <div className="px-4 mt-2">
+              <div className="flex items-center">
+                {cooperativeType === 'CREDIT' ? (
+                  <FiCreditCard className="h-4 w-4 text-indigo-300 mr-1" />
+                ) : (
+                  <FiShoppingBag className="h-4 w-4 text-indigo-300 mr-1" />
+                )}
+                <span className="text-xs font-medium text-indigo-300">
+                  {cooperativeType === 'CREDIT' ? 'Credit Cooperative' : 'Multi-Purpose Cooperative'}
+                </span>
+              </div>
+              {cooperativeName && (
+                <span className="text-xs text-indigo-300 mt-1 block truncate">
+                  {cooperativeName}
+                </span>
+              )}
+            </div>
+          )}
 
           <div className="mt-5 flex-1 h-0 overflow-y-auto">
             <nav className="px-2 space-y-1">
-              {navigation.map((item) => {
-                const isActive = pathname === item.href;
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className={`group flex items-center px-2 py-2 text-base font-medium rounded-md ${
-                      isActive
-                        ? 'bg-indigo-800 text-white'
-                        : 'text-white hover:bg-indigo-600'
-                    }`}
-                  >
-                    <svg
-                      className="mr-4 h-6 w-6 text-indigo-300"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      aria-hidden="true"
+              {/* Group navigation items */}
+              <div className="space-y-2">
+                <div className="text-xs font-semibold text-indigo-300 uppercase tracking-wider px-3 py-2">
+                  Main
+                </div>
+
+                {commonNavigation.slice(0, 6).map((item) => {
+                  const isActive = pathname === item.href;
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className={`group flex items-center px-3 py-2 text-base font-medium rounded-md ${
+                        isActive
+                          ? 'bg-indigo-800 text-white'
+                          : 'text-indigo-100 hover:bg-indigo-600 hover:text-white'
+                      }`}
+                      onClick={() => setSidebarOpen(false)}
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
-                    </svg>
-                    {item.name}
-                  </Link>
-                );
-              })}
+                      <svg
+                        className="mr-3 h-6 w-6 text-indigo-300 group-hover:text-indigo-100"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
+                      </svg>
+                      {item.name}
+                    </Link>
+                  );
+                })}
+              </div>
+
+              {/* Financial & Admin Group */}
+              <div className="space-y-2 pt-4">
+                <div className="text-xs font-semibold text-indigo-300 uppercase tracking-wider px-3 py-2">
+                  Financial & Admin
+                </div>
+
+                {[...commonNavigation.slice(6, 10), ...multiPurposeNavigation].filter(item =>
+                  item.feature === 'common' || (item.feature === 'multi_purpose' && isMultiPurpose)
+                ).map((item) => {
+                  const isActive = pathname === item.href;
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className={`group flex items-center px-3 py-2 text-base font-medium rounded-md ${
+                        isActive
+                          ? 'bg-indigo-800 text-white'
+                          : 'text-indigo-100 hover:bg-indigo-600 hover:text-white'
+                      }`}
+                      onClick={() => setSidebarOpen(false)}
+                    >
+                      <svg
+                        className="mr-3 h-6 w-6 text-indigo-300 group-hover:text-indigo-100"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
+                      </svg>
+                      {item.name}
+                    </Link>
+                  );
+                })}
+              </div>
+
+              {/* Settings Group */}
+              <div className="space-y-2 pt-4">
+                <div className="text-xs font-semibold text-indigo-300 uppercase tracking-wider px-3 py-2">
+                  Settings
+                </div>
+
+                {endNavigation.map((item) => {
+                  const isActive = pathname === item.href;
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className={`group flex items-center px-3 py-2 text-base font-medium rounded-md ${
+                        isActive
+                          ? 'bg-indigo-800 text-white'
+                          : 'text-indigo-100 hover:bg-indigo-600 hover:text-white'
+                      }`}
+                      onClick={() => setSidebarOpen(false)}
+                    >
+                      <svg
+                        className="mr-3 h-6 w-6 text-indigo-300 group-hover:text-indigo-100"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
+                      </svg>
+                      {item.name}
+                    </Link>
+                  );
+                })}
+              </div>
             </nav>
+          </div>
+
+          {/* Mobile user profile */}
+          <div className="flex-shrink-0 flex border-t border-indigo-800 p-4">
+            <div className="flex-shrink-0 w-full group block">
+              <div className="flex items-center">
+                <div>
+                  <img
+                    className="inline-block h-9 w-9 rounded-full"
+                    src={userProfile.imageUrl}
+                    alt=""
+                  />
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm font-medium text-white">{userProfile.name}</p>
+                  <p className="text-xs font-medium text-indigo-200">{userProfile.role}</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -140,34 +326,131 @@ const AdminLayout = ({ children }) => {
             <span className="text-white text-xl font-bold">Cooperative Admin</span>
           </div>
 
+          {!isLoading && (
+            <div className="px-4 mt-2">
+              <div className="flex items-center">
+                {cooperativeType === 'CREDIT' ? (
+                  <FiCreditCard className="h-4 w-4 text-indigo-300 mr-1" />
+                ) : (
+                  <FiShoppingBag className="h-4 w-4 text-indigo-300 mr-1" />
+                )}
+                <span className="text-xs font-medium text-indigo-300">
+                  {cooperativeType === 'CREDIT' ? 'Credit Cooperative' : 'Multi-Purpose Cooperative'}
+                </span>
+              </div>
+              {cooperativeName && (
+                <span className="text-xs text-indigo-300 mt-1 block truncate">
+                  {cooperativeName}
+                </span>
+              )}
+            </div>
+          )}
+
           <div className="flex-1 flex flex-col overflow-y-auto">
             <nav className="flex-1 px-2 py-4 space-y-1">
-              {navigation.map((item) => {
-                const isActive = pathname === item.href;
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
-                      isActive
-                        ? 'bg-indigo-800 text-white'
-                        : 'text-white hover:bg-indigo-600'
-                    }`}
-                  >
-                    <svg
-                      className="mr-3 h-6 w-6 text-indigo-300"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      aria-hidden="true"
+              {/* Group navigation items */}
+              <div className="space-y-2">
+                <div className="text-xs font-semibold text-indigo-300 uppercase tracking-wider px-3 py-2">
+                  Main
+                </div>
+
+                {commonNavigation.slice(0, 6).map((item) => {
+                  const isActive = pathname === item.href;
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+                        isActive
+                          ? 'bg-indigo-800 text-white'
+                          : 'text-indigo-100 hover:bg-indigo-600 hover:text-white'
+                      }`}
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
-                    </svg>
-                    {item.name}
-                  </Link>
-                );
-              })}
+                      <svg
+                        className="mr-3 h-5 w-5 text-indigo-300 group-hover:text-indigo-100"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
+                      </svg>
+                      {item.name}
+                    </Link>
+                  );
+                })}
+              </div>
+
+              {/* Financial & Admin Group */}
+              <div className="space-y-2 pt-4">
+                <div className="text-xs font-semibold text-indigo-300 uppercase tracking-wider px-3 py-2">
+                  Financial & Admin
+                </div>
+
+                {[...commonNavigation.slice(6, 10), ...multiPurposeNavigation].filter(item =>
+                  item.feature === 'common' || (item.feature === 'multi_purpose' && isMultiPurpose)
+                ).map((item) => {
+                  const isActive = pathname === item.href;
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+                        isActive
+                          ? 'bg-indigo-800 text-white'
+                          : 'text-indigo-100 hover:bg-indigo-600 hover:text-white'
+                      }`}
+                    >
+                      <svg
+                        className="mr-3 h-5 w-5 text-indigo-300 group-hover:text-indigo-100"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
+                      </svg>
+                      {item.name}
+                    </Link>
+                  );
+                })}
+              </div>
+
+              {/* Settings Group */}
+              <div className="space-y-2 pt-4">
+                <div className="text-xs font-semibold text-indigo-300 uppercase tracking-wider px-3 py-2">
+                  Settings
+                </div>
+
+                {endNavigation.map((item) => {
+                  const isActive = pathname === item.href;
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+                        isActive
+                          ? 'bg-indigo-800 text-white'
+                          : 'text-indigo-100 hover:bg-indigo-600 hover:text-white'
+                      }`}
+                    >
+                      <svg
+                        className="mr-3 h-5 w-5 text-indigo-300 group-hover:text-indigo-100"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
+                      </svg>
+                      {item.name}
+                    </Link>
+                  );
+                })}
+              </div>
             </nav>
 
             <div className="flex-shrink-0 flex border-t border-indigo-800 p-4">
@@ -197,16 +480,23 @@ const AdminLayout = ({ children }) => {
             type="button"
             className="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
             onClick={() => setSidebarOpen(true)}
+            aria-label="Open sidebar"
           >
-            <span className="sr-only">Open sidebar</span>
-            <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h7" />
-            </svg>
+            <FiMenu className="h-6 w-6" />
           </button>
 
           <div className="flex-1 px-4 flex justify-between">
             <div className="flex-1 flex items-center">
-              <div>
+              {/* Breadcrumb for mobile */}
+              <div className="md:hidden">
+                <h1 className="text-lg font-semibold text-gray-900">
+                  {pathname === '/admin' ? 'Dashboard' :
+                   pathname.split('/').pop().charAt(0).toUpperCase() + pathname.split('/').pop().slice(1)}
+                </h1>
+              </div>
+
+              {/* Desktop header */}
+              <div className="hidden md:block">
                 <h1 className="text-2xl font-semibold text-gray-900">
                   {navigation.find(item => item.href === pathname)?.name || 'Admin Dashboard'}
                 </h1>
@@ -235,15 +525,26 @@ const AdminLayout = ({ children }) => {
             </div>
 
             <div className="ml-4 flex items-center md:ml-6">
-              {/* Notifications */}
+              {/* Cooperative type indicator - visible only on mobile */}
+              {!isLoading && (
+                <div className="mr-3 md:hidden">
+                  <div className="flex items-center">
+                    {cooperativeType === 'CREDIT' ? (
+                      <FiCreditCard className="h-4 w-4 text-indigo-600 mr-1" />
+                    ) : (
+                      <FiShoppingBag className="h-4 w-4 text-green-600 mr-1" />
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Notifications button */}
               <button
                 type="button"
                 className="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                aria-label="View notifications"
               >
-                <span className="sr-only">View notifications</span>
-                <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                </svg>
+                <FiBell className="h-6 w-6" />
               </button>
 
               {/* Profile dropdown */}
@@ -258,29 +559,53 @@ const AdminLayout = ({ children }) => {
                     onClick={() => setUserMenuOpen(!userMenuOpen)}
                   >
                     <span className="sr-only">Open user menu</span>
-                    <img className="h-8 w-8 rounded-full" src={userProfile.imageUrl} alt="" />
+                    <img
+                      className="h-8 w-8 rounded-full"
+                      src={userProfile.imageUrl}
+                      alt={`${userProfile.name}'s profile`}
+                    />
                   </button>
                 </div>
 
-                {userMenuOpen && (
-                  <div
-                    className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
-                    role="menu"
-                    aria-orientation="vertical"
-                    aria-labelledby="user-menu-button"
-                    tabIndex="-1"
+                {/* Dropdown menu - with transition */}
+                <div
+                  className={`transition-all duration-200 ease-in-out transform ${
+                    userMenuOpen
+                      ? 'opacity-100 scale-100'
+                      : 'opacity-0 scale-95 pointer-events-none'
+                  } origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50`}
+                  role="menu"
+                  aria-orientation="vertical"
+                  aria-labelledby="user-menu-button"
+                >
+                  <a
+                    href="#"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    role="menuitem"
                   >
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Your Profile</a>
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</a>
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Sign out</a>
-                  </div>
-                )}
+                    Your Profile
+                  </a>
+                  <a
+                    href="#"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    role="menuitem"
+                  >
+                    Settings
+                  </a>
+                  <a
+                    href="#"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    role="menuitem"
+                  >
+                    Sign out
+                  </a>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <main className="flex-1">
+        <main id="main-content" className="flex-1" tabIndex="-1">
           <div className="py-6">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
               {children}

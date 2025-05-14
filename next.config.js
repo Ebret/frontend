@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
+const withBundleAnalyzer = process.env.ANALYZE === 'true'
+  ? require('@next/bundle-analyzer')({ enabled: true })
+  : (config) => config;
+
 const nextConfig = {
   // Enable React strict mode for better development experience
   reactStrictMode: true,
@@ -31,17 +35,57 @@ const nextConfig = {
   webpack: (config, { dev, isServer }) => {
     // Add your webpack configurations here
 
-    // Example: Add bundle analyzer in production build
-    if (!dev && !isServer) {
-      const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-      config.plugins.push(
-        new BundleAnalyzerPlugin({
-          analyzerMode: 'static',
-          reportFilename: '../bundle-analysis/client.html',
-          openAnalyzer: false,
-        })
-      );
-    }
+    // Optimize SVG imports
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ['@svgr/webpack'],
+    });
+
+    // Implement code splitting
+    config.optimization.splitChunks = {
+      chunks: 'all',
+      maxInitialRequests: 25,
+      minSize: 20000,
+      cacheGroups: {
+        default: false,
+        vendors: false,
+        // Vendor chunk for third-party libraries
+        vendor: {
+          name: 'vendor',
+          chunks: 'all',
+          test: /[\\/]node_modules[\\/]/,
+          priority: 20,
+        },
+        // Common chunk for code shared between pages
+        common: {
+          name: 'common',
+          minChunks: 2,
+          chunks: 'all',
+          priority: 10,
+          reuseExistingChunk: true,
+          enforce: true,
+        },
+        // Specific chunks for larger libraries to avoid bundling them together
+        react: {
+          name: 'react',
+          test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+          chunks: 'all',
+          priority: 30,
+        },
+        tailwind: {
+          name: 'tailwind',
+          test: /[\\/]node_modules[\\/](tailwindcss)[\\/]/,
+          chunks: 'all',
+          priority: 30,
+        },
+        icons: {
+          name: 'icons',
+          test: /[\\/]node_modules[\\/]react-icons[\\/]/,
+          chunks: 'all',
+          priority: 30,
+        },
+      },
+    };
 
     return config;
   },
@@ -104,4 +148,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withBundleAnalyzer(nextConfig);
