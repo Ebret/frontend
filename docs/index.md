@@ -99,6 +99,7 @@ Key package artifacts:
 - Posting rules matrix: `docs/architecture/posting-rules-matrix.md`
 - Compliance matrix: `docs/architecture/compliance-matrix.md`
 - ERD and field dictionary: `docs/architecture/erd-and-fields.md`
+- Regulatory compliance pack: `docs/architecture/regulatory-compliance-pack.md`
 - Configuration registry: `docs/architecture/configuration-registry.md`
 - Ledger policy: `docs/architecture/ledger-policy.md`
 - Event versioning: `docs/architecture/event-versioning.md`
@@ -107,6 +108,9 @@ Key package artifacts:
 - Testing matrix: `docs/architecture/testing-matrix.md`
 - Data migration playbook: `docs/architecture/data-migration-playbook.md`
 - Exception management: `docs/architecture/exception-management.md`
+- Compliance workflows: `docs/architecture/compliance-workflows.md`
+- Reporting calendars: `docs/architecture/reporting-calendars.md`
+- Member assets/liabilities form: `docs/architecture/member-assets-liabilities-form.md`
 - MVP backlog: `docs/architecture/mvp-backlog.md`
 - API boundaries and events: `docs/architecture/api-boundaries-events.md`
 

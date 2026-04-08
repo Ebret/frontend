@@ -18,6 +18,9 @@ This folder contains a reusable architecture and implementation blueprint for a 
 - `docs/architecture/product-catalog-spec.md`: Savings and loan product parameters, defaults, and validations.
 - `docs/architecture/posting-rules-matrix.md`: Draft mapping of transaction types to accounting templates.
 - `docs/architecture/compliance-matrix.md`: CDA and BIR compliance data and evidence stub.
+- `docs/architecture/regulatory-compliance-pack.md`: CDA, BIR, SSS, Pag-IBIG, PhilHealth compliance pack.
+- `docs/architecture/hr-payroll-compliance.md`: HR/payroll compliance requirements and evidence.
+- `docs/architecture/member-assets-liabilities-form.md`: Member financial capacity form template.
 - `docs/architecture/erd-and-fields.md`: ERD and core field dictionary.
 - `docs/architecture/mvp-backlog.md`: MVP epics, stories, and acceptance criteria.
 - `docs/architecture/api-boundaries-events.md`: API boundary map, events, and idempotency rules.
@@ -32,6 +35,8 @@ This folder contains a reusable architecture and implementation blueprint for a 
 - `docs/architecture/testing-matrix.md`: MVP test coverage matrix.
 - `docs/architecture/data-migration-playbook.md`: Migration steps and reconciliation checks.
 - `docs/architecture/exception-management.md`: Exception types, workflow, and evidence.
+- `docs/architecture/compliance-workflows.md`: CDA/BIR/SSS/PhilHealth compliance workflows.
+- `docs/architecture/reporting-calendars.md`: Regulatory reporting calendars and reminders.
 
 ## Intended Use
 - Use the full document for alignment with stakeholders.

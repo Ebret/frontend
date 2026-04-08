@@ -26,6 +26,11 @@ erDiagram
   PRODUCT ||--o{ PRODUCT_VERSION : versions
   ACCOUNTING_TEMPLATE ||--o{ JOURNAL_ENTRY : applied_by
   PRODUCT_VERSION ||--o{ ACCOUNTING_TEMPLATE : versions
+  MEMBER ||--o{ MEMBER_FINANCIAL_STATEMENT : declares
+  MEMBER_FINANCIAL_STATEMENT ||--o{ MEMBER_ASSET : includes
+  MEMBER_FINANCIAL_STATEMENT ||--o{ MEMBER_LIABILITY : includes
+  COOPERATIVE ||--o{ EMPLOYER_REMITTANCE : remits
+  MEMBER ||--o{ EMPLOYER_REPORTING : reported_in
 
   COOPERATIVE {
     string cooperative_id PK
@@ -164,6 +169,46 @@ erDiagram
     string mapping_version
     string rationale
   }
+  MEMBER_FINANCIAL_STATEMENT {
+    string statement_id PK
+    string member_id FK
+    date statement_date
+    decimal total_assets
+    decimal total_liabilities
+    decimal total_income
+  }
+  MEMBER_ASSET {
+    string asset_id PK
+    string statement_id FK
+    string asset_type
+    string description
+    decimal estimated_value
+  }
+  MEMBER_LIABILITY {
+    string liability_id PK
+    string statement_id FK
+    string liability_type
+    string description
+    decimal outstanding_balance
+    decimal monthly_payment
+  }
+  EMPLOYER_REMITTANCE {
+    string remittance_id PK
+    string cooperative_id FK
+    string remittance_type
+    string period
+    decimal amount
+    string prn
+    string payment_reference
+    datetime submitted_at
+  }
+  EMPLOYER_REPORTING {
+    string reporting_id PK
+    string member_id FK
+    string report_type
+    datetime submitted_at
+    string submission_reference
+  }
 ```
 
 ## Field Dictionary (Core Entities)
@@ -284,6 +329,56 @@ erDiagram
 | approved_at | datetime | Approval timestamp | Required |
 | mapping_version | string | Mapping version identifier | Required |
 | rationale | string | Approval rationale | Required |
+
+### Member Financial Statement
+| Field | Type | Description | Constraints |
+| --- | --- | --- | --- |
+| statement_id | string | Statement identifier | Required, unique |
+| member_id | string | Member reference | Required, FK |
+| statement_date | date | Statement date | Required |
+| total_assets | decimal | Total assets | >= 0 |
+| total_liabilities | decimal | Total liabilities | >= 0 |
+| total_income | decimal | Total monthly income | >= 0 |
+
+### Member Asset
+| Field | Type | Description | Constraints |
+| --- | --- | --- | --- |
+| asset_id | string | Asset identifier | Required, unique |
+| statement_id | string | Statement reference | Required, FK |
+| asset_type | string | Asset category | Required |
+| description | string | Asset description | Required |
+| estimated_value | decimal | Estimated value | >= 0 |
+
+### Member Liability
+| Field | Type | Description | Constraints |
+| --- | --- | --- | --- |
+| liability_id | string | Liability identifier | Required, unique |
+| statement_id | string | Statement reference | Required, FK |
+| liability_type | string | Liability category | Required |
+| description | string | Liability description | Required |
+| outstanding_balance | decimal | Outstanding balance | >= 0 |
+| monthly_payment | decimal | Monthly payment | >= 0 |
+
+### Employer Remittance
+| Field | Type | Description | Constraints |
+| --- | --- | --- | --- |
+| remittance_id | string | Remittance identifier | Required, unique |
+| cooperative_id | string | Cooperative reference | Required, FK |
+| remittance_type | string | SSS/Pag-IBIG/PhilHealth | Required |
+| period | string | Remittance period | Required |
+| amount | decimal | Total amount | >= 0 |
+| prn | string | PRN reference | Optional |
+| payment_reference | string | Payment reference | Required |
+| submitted_at | datetime | Submitted timestamp | Required |
+
+### Employer Reporting
+| Field | Type | Description | Constraints |
+| --- | --- | --- | --- |
+| reporting_id | string | Reporting identifier | Required, unique |
+| member_id | string | Member reference | Required, FK |
+| report_type | string | ER2/RF-1 | Required |
+| submitted_at | datetime | Submitted timestamp | Required |
+| submission_reference | string | Submission reference | Required |
 
 ### Product
 | Field | Type | Description | Constraints |

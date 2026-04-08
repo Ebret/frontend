@@ -21,6 +21,10 @@
 - Testing matrix: `docs/architecture/testing-matrix.md`
 - Data migration playbook: `docs/architecture/data-migration-playbook.md`
 - Exception management: `docs/architecture/exception-management.md`
+- Regulatory compliance pack: `docs/architecture/regulatory-compliance-pack.md`
+- Compliance workflows: `docs/architecture/compliance-workflows.md`
+- Reporting calendars: `docs/architecture/reporting-calendars.md`
+- Member assets/liabilities form: `docs/architecture/member-assets-liabilities-form.md`
 
 ## 1. Document Purpose
 This package is a reusable architecture and implementation blueprint for a Philippine savings and loan cooperative. It is designed to be usable by:

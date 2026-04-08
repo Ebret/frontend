@@ -82,3 +82,25 @@ flowchart LR
     TT5 --> TT6[Generate Receipt and Accounting Entries]
     TT6 --> TT7[Update Cash Session Totals]
   end
+
+  subgraph CAPR_Submission
+    CP1[Generate CAPR Dataset] --> CP2[Validate Required Fields]
+    CP2 --> CP3[Prepare Submission Package]
+    CP3 --> CP4[Submit via CAPRIS]
+    CP4 --> CP5[Record Submission Reference]
+    CP5 --> CP6[Upload Signed Copy]
+    CP6 --> CP7[Checker Approval]
+  end
+
+  subgraph SSS_PRN_Remittance
+    SR1[Compute Contributions] --> SR2[Generate PRN]
+    SR2 --> SR3[Submit Remittance]
+    SR3 --> SR4[Record Payment Reference]
+    SR4 --> SR5[Checker Approval]
+  end
+
+  subgraph PhilHealth_ER2_RF1
+    PH1[Prepare ER2/RF-1] --> PH2[Submit via EPRS]
+    PH2 --> PH3[Record Submission Reference]
+    PH3 --> PH4[Checker Approval]
+  end
