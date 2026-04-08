@@ -1,0 +1,31 @@
+flowchart LR
+  subgraph Member
+    A1[Submit Loan Application]
+    A2[Provide Required Documents]
+  end
+
+  subgraph Loan_Encoder
+    L1[Encode Application]
+    L2[Validate Product Eligibility]
+    L3[Assemble Credit File]
+  end
+
+  subgraph Credit_Investigator
+    C1[Conduct Credit Investigation]
+    C2[Prepare Credit Assessment]
+  end
+
+  subgraph Credit_Committee
+    CC1[Review Assessment and Exposure]
+    CC2[Approve or Decline]
+  end
+
+  subgraph System
+    S1[Generate Release Documents]
+    S2[Disburse Loan]
+    S3[Create Amortization Schedule]
+    S4[Post Accounting Entries]
+  end
+
+  A1 --> L1 --> L2
+  A2 --> L3 --> C1 --> C2 --> CC1 --> CC2 --> S1 --> S2 --> S3 --> S4

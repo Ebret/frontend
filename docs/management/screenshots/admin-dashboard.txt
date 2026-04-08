@@ -1,0 +1,25 @@
++------------------------------------------------------------+
+|                                                            |
+|                                                            |
+|                   ADMIN-DASHBOARD                          |
+|                                                            |
+|                   Administrator Role                       |
+|                                                            |
+|                                                            |
+|                Placeholder for presentation                |
+|                                                            |
+|  +------------------+        +----------------------+      |
+|  | Summary Cards    |        | Pending Approvals    |      |
+|  | Members: 1,245   |        | Loans: 3             |      |
+|  | Loans: ₱12.5M    |        | Memberships: 2       |      |
+|  | Savings: ₱25.8M  |        | Withdrawals: 1       |      |
+|  +------------------+        +----------------------+      |
+|                                                            |
+|  +------------------+        +----------------------+      |
+|  | Recent Activities|        | System Health        |      |
+|  | New Registrations|        | Server: Online       |      |
+|  | Loan Applications|        | Database: Online     |      |
+|  | Profile Updates  |        | API Response: 245ms  |      |
+|  +------------------+        +----------------------+      |
+|                                                            |
++------------------------------------------------------------+

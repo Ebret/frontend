@@ -1,0 +1,20 @@
+flowchart LR
+  subgraph Applicant
+    A1[Submit Application Data]
+    A2[Provide Documents]
+  end
+
+  subgraph Membership_Officer
+    M1[Encode Application]
+    M2[Verify Identity and KYC]
+    M3[Run Duplicate and Sanctions Checks]
+    M4[Prepare Approval Packet]
+    M5[Create Member Record]
+  end
+
+  subgraph Approver
+    AP1[Review and Approve Membership]
+  end
+
+  A1 --> M1 --> M2
+  A2 --> M2 --> M3 --> M4 --> AP1 --> M5

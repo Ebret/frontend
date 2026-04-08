@@ -1,0 +1,84 @@
+flowchart LR
+  subgraph Member_Onboarding
+    MO1[Capture Application] --> MO2[Capture Identity, Contact, Employer, Tax]
+    MO2 --> MO3[Collect KYC Documents]
+    MO3 --> MO4[Duplicate and Sanctions Screening]
+    MO4 --> MO5[Route for Membership Approval]
+    MO5 --> MO6[Create Member Master Record]
+    MO6 --> MO7[Open Share Capital and Savings Accounts]
+    MO7 --> MO8[Generate Member Number and Document Packet]
+  end
+
+  subgraph Share_Capital_Build_Up
+    SC1[Define Capital Build-Up Rule] --> SC2[Accept Contribution]
+    SC2 --> SC3[Post Member Ledger Transaction]
+    SC3 --> SC4[Generate Accounting Entries]
+    SC4 --> SC5[Update Capital Balance and Certificate]
+  end
+
+  subgraph Savings_Deposit_Withdrawal
+    SD1[Select Account and Validate Status] --> SD2[Validate Teller Session and Cash Limits]
+    SD2 --> SD3[Accept Transaction with Source Document]
+    SD3 --> SD4[Apply Holds, Fees, or Restrictions]
+    SD4 --> SD5[Post to Account Ledger]
+    SD5 --> SD6[Generate Receipt and Accounting Entries]
+    SD6 --> SD7[Update Cash Drawer and Branch Position]
+  end
+
+  subgraph Loan_Origination
+    LO1[Create Loan Application] --> LO2[Validate Product Eligibility]
+    LO2 --> LO3[Collect Documents and Co-makers]
+    LO3 --> LO4[Credit Investigation and Scoring]
+    LO4 --> LO5[Route to Approving Body]
+    LO5 --> LO6[Record Decision and Conditions]
+    LO6 --> LO7[Generate Release Documents]
+    LO7 --> LO8[Disburse Loan]
+    LO8 --> LO9[Create Amortization Schedule]
+    LO9 --> LO10[Post Accounting Entries]
+  end
+
+  subgraph Loan_Collection
+    LC1[Select Loan Account] --> LC2[Determine Due Amounts]
+    LC2 --> LC3[Apply Payment Allocation Waterfall]
+    LC3 --> LC4[Produce Official Receipt]
+    LC4 --> LC5[Update Amortization Status and Delinquency]
+    LC5 --> LC6[Post Accounting Entries]
+    LC6 --> LC7[Reconcile Cash and Collection Channels]
+  end
+
+  subgraph Loan_Restructuring
+    LR1[Raise Restructuring Request] --> LR2[Capture Reason and Evidence]
+    LR2 --> LR3[Freeze Old Schedule Version]
+    LR3 --> LR4[Route Approval]
+    LR4 --> LR5[Generate New Terms and Schedule]
+    LR5 --> LR6[Preserve Linkage to Original History]
+    LR6 --> LR7[Post Adjustment Entries]
+  end
+
+  subgraph Period_Close
+    PC1[Lock Open Transaction Windows] --> PC2[Complete Accruals and Batch Jobs]
+    PC2 --> PC3[Review Suspense and Exception Queues]
+    PC3 --> PC4[Validate Subledger to GL Reconciliation]
+    PC4 --> PC5[Close Accounting Period]
+    PC5 --> PC6[Generate Statements and Report Packs]
+    PC6 --> PC7[Archive Compliance Evidence Snapshot]
+  end
+
+  subgraph Cash_Session
+    CS1[Open Cash Session] --> CS2[Record Opening Balance]
+    CS2 --> CS3[Validate Teller Assignment]
+    CS3 --> CS4[Post Opening Entry]
+    CS4 --> CS5[Process Teller Transactions]
+    CS5 --> CS6[Count End-of-Day Cash]
+    CS6 --> CS7[Post Closing Entry and Variances]
+    CS7 --> CS8[Close Cash Session]
+  end
+
+  subgraph Teller_Transaction
+    TT1[Validate Active Cash Session] --> TT2[Identify Member and Account or Loan]
+    TT2 --> TT3[Accept Funds or Disburse Cash]
+    TT3 --> TT4[Capture Source Document Reference]
+    TT4 --> TT5[Post Transaction and Update Balances]
+    TT5 --> TT6[Generate Receipt and Accounting Entries]
+    TT6 --> TT7[Update Cash Session Totals]
+  end

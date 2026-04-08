@@ -1,0 +1,7 @@
+flowchart TD
+  A[Lock Open Transaction Windows] --> B[Complete Accruals and Batch Jobs]
+  B --> C[Review Suspense and Exception Queues]
+  C --> D[Validate Subledger to GL Reconciliation]
+  D --> E[Close Accounting Period]
+  E --> F[Generate Statements and Report Packs]
+  F --> G[Archive Compliance Evidence Snapshot]

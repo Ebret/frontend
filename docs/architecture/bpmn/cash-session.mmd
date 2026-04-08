@@ -1,0 +1,8 @@
+flowchart TD
+  A[Open Cash Session] --> B[Record Opening Balance]
+  B --> C[Validate Teller Assignment]
+  C --> D[Post Opening Entry]
+  D --> E[Process Teller Transactions]
+  E --> F[Count End-of-Day Cash]
+  F --> G[Post Closing Entry and Variances]
+  G --> H[Close Cash Session]

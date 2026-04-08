@@ -1,0 +1,28 @@
+flowchart LR
+  subgraph Member
+    M1[Request Transaction]
+    M2[Provide Source Document]
+  end
+
+  subgraph Teller
+    T1[Validate Member and Account]
+    T2[Validate Session and Cash Limits]
+    T3[Accept Cash or Disburse Funds]
+    T4[Issue Receipt]
+  end
+
+  subgraph Treasury
+    TR1[Monitor Cash Position]
+    TR2[Approve Cash Override if Needed]
+  end
+
+  subgraph System
+    S1[Apply Holds, Fees, Restrictions]
+    S2[Post Ledger Transaction]
+    S3[Generate Accounting Entries]
+    S4[Update Cash Drawer and Branch Position]
+  end
+
+  M1 --> T1 --> T2 --> T3
+  M2 --> T3 --> S1 --> S2 --> S3 --> T4 --> S4 --> TR1
+  T2 --> TR2

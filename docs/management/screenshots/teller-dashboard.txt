@@ -1,0 +1,25 @@
++------------------------------------------------------------+
+|                                                            |
+|                                                            |
+|                  TELLER-DASHBOARD                          |
+|                                                            |
+|                     Teller Role                            |
+|                                                            |
+|                                                            |
+|                Placeholder for presentation                |
+|                                                            |
+|  +------------------+        +----------------------+      |
+|  | Transactions     |        | Member Queue         |      |
+|  | Today's: 32      |        | Now Serving: #45     |      |
+|  | Cash: ₱125,750   |        | Waiting: 3 members   |      |
+|  | Queue: 3 members |        | Est. Wait: 10 min    |      |
+|  +------------------+        +----------------------+      |
+|                                                            |
+|  +------------------+        +----------------------+      |
+|  | Recent Activity  |        | Daily Summary        |      |
+|  | Deposits: 15     |        | Deposits: ₱75,500    |      |
+|  | Withdrawals: 10  |        | Withdrawals: ₱45,000 |      |
+|  | Loan Payments: 7 |        | Net Flow: +₱55,224   |      |
+|  +------------------+        +----------------------+      |
+|                                                            |
++------------------------------------------------------------+

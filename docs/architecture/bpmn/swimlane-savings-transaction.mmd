@@ -1,0 +1,22 @@
+flowchart LR
+  subgraph Member
+    A1[Request Deposit or Withdrawal]
+    A2[Present Source Document]
+  end
+
+  subgraph Teller
+    T1[Validate Account Status]
+    T2[Validate Teller Session and Cash Limits]
+    T3[Accept Transaction]
+    T4[Issue Receipt]
+  end
+
+  subgraph System
+    S1[Apply Holds, Fees, Restrictions]
+    S2[Post to Account Ledger]
+    S3[Generate Accounting Entries]
+    S4[Update Cash Drawer and Branch Position]
+  end
+
+  A1 --> T1 --> T2
+  A2 --> T3 --> S1 --> S2 --> S3 --> T4 --> S4

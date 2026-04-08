@@ -1,0 +1,25 @@
++------------------------------------------------------------+
+|                                                            |
+|                                                            |
+|               CREDIT-OFFICER-DASHBOARD                     |
+|                                                            |
+|                  Credit Officer Role                       |
+|                                                            |
+|                                                            |
+|                Placeholder for presentation                |
+|                                                            |
+|  +------------------+        +----------------------+      |
+|  | Loan Applications|        | Delinquent Loans     |      |
+|  | Pending: 12      |        | 30 days: 1           |      |
+|  | Approved: 8      |        | 45 days: 1           |      |
+|  | Rejected: 3      |        | 15 days: 1           |      |
+|  +------------------+        +----------------------+      |
+|                                                            |
+|  +------------------+        +----------------------+      |
+|  | Loan Performance |        | Credit Scoring       |      |
+|  | Current: 65%     |        | Excellent: 25%       |      |
+|  | Past Due: 20%    |        | Good: 40%            |      |
+|  | Delinquent: 15%  |        | Fair: 20%            |      |
+|  +------------------+        +----------------------+      |
+|                                                            |
++------------------------------------------------------------+

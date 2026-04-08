@@ -1,0 +1,23 @@
++------------------------------------------------------------+
+|                                                            |
+|                                                            |
+|                   EWALLET-DAMAYAN                          |
+|                                                            |
+|                  Damayan Fund Integration                  |
+|                                                            |
+|                                                            |
+|                Placeholder for presentation                |
+|                                                            |
+|  +------------------+        +----------------------+      |
+|  | Fund Status      |        | Member Status        |      |
+|  | Total: ₱1.2M     |        | Active Member        |      |
+|  | Members: 342     |        | Contributions: ₱2,400|      |
+|  +------------------+        +----------------------+      |
+|                                                            |
+|  +------------------+        +----------------------+      |
+|  | Contribute       |        | Request Assistance   |      |
+|  | Monthly: ₱100    |        | Health Emergency     |      |
+|  | Additional: ₱500 |        | Bereavement          |      |
+|  +------------------+        +----------------------+      |
+|                                                            |
++------------------------------------------------------------+

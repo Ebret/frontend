@@ -1,0 +1,7 @@
+flowchart TD
+  A[Select Account and Validate Status] --> B[Validate Teller Session and Cash Limits]
+  B --> C[Accept Transaction with Source Document]
+  C --> D[Apply Holds, Fees, or Restrictions]
+  D --> E[Post to Account Ledger]
+  E --> F[Generate Receipt and Accounting Entries]
+  F --> G[Update Cash Drawer and Branch Position]

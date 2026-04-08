@@ -1,0 +1,25 @@
++------------------------------------------------------------+
+|                                                            |
+|                                                            |
+|                    GM-DASHBOARD                            |
+|                                                            |
+|                 General Manager Role                       |
+|                                                            |
+|                                                            |
+|                Placeholder for presentation                |
+|                                                            |
+|  +------------------+        +----------------------+      |
+|  | Operational KPIs |        | Strategic Initiatives|      |
+|  | Efficiency: 98.5%|        | Digital Transform    |      |
+|  | Revenue: ₱1.3M   |        | Branch Expansion     |      |
+|  | Staff: 25        |        | Financial Literacy   |      |
+|  +------------------+        +----------------------+      |
+|                                                            |
+|  +------------------+        +----------------------+      |
+|  | Staff Performance|        | Tasks & Approvals    |      |
+|  | Loans Dept: 92%  |        | Financial Projections|      |
+|  | Membership: 88%  |        | Performance Reviews  |      |
+|  | Accounting: 95%  |        | Board Presentation   |      |
+|  +------------------+        +----------------------+      |
+|                                                            |
++------------------------------------------------------------+

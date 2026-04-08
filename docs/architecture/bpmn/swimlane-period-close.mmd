@@ -1,0 +1,21 @@
+flowchart LR
+  subgraph Accounting_Officer
+    A1[Initiate Period Close]
+    A2[Review Suspense and Exceptions]
+    A3[Confirm Subledger to GL Reco]
+    A4[Approve Period Close]
+  end
+
+  subgraph System
+    S1[Lock Open Windows]
+    S2[Run Accruals and Batch Jobs]
+    S3[Generate Statements and Reports]
+    S4[Archive Compliance Evidence]
+  end
+
+  subgraph Compliance_Officer
+    C1[Validate Report Evidence]
+    C2[Submit Required Reports]
+  end
+
+  A1 --> S1 --> S2 --> A2 --> A3 --> A4 --> S3 --> C1 --> C2 --> S4

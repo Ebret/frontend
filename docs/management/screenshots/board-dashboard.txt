@@ -1,0 +1,25 @@
++------------------------------------------------------------+
+|                                                            |
+|                                                            |
+|                   BOARD-DASHBOARD                          |
+|                                                            |
+|                Board of Directors Role                     |
+|                                                            |
+|                                                            |
+|                Placeholder for presentation                |
+|                                                            |
+|  +------------------+        +----------------------+      |
+|  | Financial Stats  |        | Policy Review        |      |
+|  | Assets: ₱38.3M   |        | Interest Rate Change |      |
+|  | ROI: 12.5%       |        | Membership Updates   |      |
+|  | Members: 1,245   |        | Damayan Contribution |      |
+|  +------------------+        +----------------------+      |
+|                                                            |
+|  +------------------+        +----------------------+      |
+|  | Financial Charts |        | Governance Metrics   |      |
+|  | Monthly Revenue  |        | Compliance: 92%      |      |
+|  | Expenses         |        | Risk Management: 85% |      |
+|  | Net Income       |        | Member Satisfaction  |      |
+|  +------------------+        +----------------------+      |
+|                                                            |
++------------------------------------------------------------+

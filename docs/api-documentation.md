@@ -1,42 +1,26 @@
-# API Documentation
+# Credit Cooperative System API Documentation
 
-This document provides detailed information about the API endpoints used in the Credit Cooperative System.
-
-## Table of Contents
-
-1. [Authentication](#authentication)
-2. [User Management](#user-management)
-3. [Audit Logging](#audit-logging)
-4. [E-Wallet](#e-wallet)
-5. [Error Handling](#error-handling)
-6. [Rate Limiting](#rate-limiting)
-7. [Pagination](#pagination)
+This document provides comprehensive documentation for the Credit Cooperative System API.
 
 ## Base URL
 
 All API endpoints are relative to the base URL:
 
-```
-http://localhost:3001/api
-```
-
-For production, the base URL would be:
-
-```
-https://api.example.com/api
-```
+- Development: `http://localhost:3001/api/v1`
+- Staging: `https://staging-api.cooperativesystem.com/api/v1`
+- Production: `https://api.cooperativesystem.com/api/v1`
 
 ## Authentication
 
-### Login
+Most API endpoints require authentication. The API uses JWT (JSON Web Token) for authentication.
 
-Authenticates a user and returns a JWT token.
+### Obtaining a Token
 
 ```
 POST /auth/login
 ```
 
-#### Request
+**Request Body:**
 
 ```json
 {
@@ -45,139 +29,145 @@ POST /auth/login
 }
 ```
 
-#### Response
+**Response:**
 
 ```json
 {
   "status": "success",
-  "message": "Login successful",
-  "data": {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "user": {
-      "id": 1,
-      "email": "user@example.com",
-      "firstName": "John",
-      "lastName": "Doe",
-      "role": "ADMIN"
-    }
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": "123",
+    "email": "user@example.com",
+    "firstName": "John",
+    "lastName": "Doe",
+    "role": "MEMBER"
   }
 }
 ```
 
-### Register
+### Using the Token
 
-Registers a new user.
+Include the token in the Authorization header of your requests:
 
 ```
-POST /auth/register
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
-#### Request
+## Error Handling
+
+The API uses standard HTTP status codes to indicate the success or failure of a request.
+
+### Error Response Format
 
 ```json
 {
-  "email": "user@example.com",
-  "password": "password123",
+  "status": "error",
+  "message": "Error message",
+  "errorId": "err_1234567890",
+  "timestamp": "2023-01-01T00:00:00.000Z"
+}
+```
+
+### Common Error Codes
+
+- `400 Bad Request`: Invalid request parameters
+- `401 Unauthorized`: Missing or invalid authentication
+- `403 Forbidden`: Authenticated but not authorized
+- `404 Not Found`: Resource not found
+- `422 Unprocessable Entity`: Validation error
+- `500 Internal Server Error`: Server error
+
+## Rate Limiting
+
+The API implements rate limiting to prevent abuse. The default limits are:
+
+- 100 requests per 15-minute window for authenticated users
+- 50 requests per 15-minute window for unauthenticated users
+
+Rate limit information is included in the response headers:
+
+- `X-RateLimit-Limit`: Maximum number of requests allowed in the window
+- `X-RateLimit-Remaining`: Number of requests remaining in the current window
+- `X-RateLimit-Reset`: Time when the current window resets (Unix timestamp)
+
+## API Endpoints
+
+### User Management
+
+#### Get Current User
+
+```
+GET /users/me
+```
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "id": "123",
+    "email": "user@example.com",
+    "firstName": "John",
+    "lastName": "Doe",
+    "role": "MEMBER",
+    "createdAt": "2023-01-01T00:00:00.000Z",
+    "updatedAt": "2023-01-01T00:00:00.000Z"
+  }
+}
+```
+
+#### Update User Profile
+
+```
+PATCH /users/me
+```
+
+**Request Body:**
+
+```json
+{
   "firstName": "John",
-  "lastName": "Doe",
-  "phoneNumber": "+1234567890",
-  "address": "123 Main St",
-  "dateOfBirth": "1990-01-01",
-  "idType": "passport",
-  "idNumber": "AB123456",
-  "accountType": "standard"
+  "lastName": "Smith",
+  "phone": "+1234567890",
+  "address": "123 Main St"
 }
 ```
 
-#### Response
+**Response:**
 
 ```json
 {
   "status": "success",
-  "message": "Registration successful",
   "data": {
-    "user": {
-      "id": 1,
-      "email": "user@example.com",
-      "firstName": "John",
-      "lastName": "Doe",
-      "role": "MEMBER",
-      "status": "PENDING_VERIFICATION"
-    }
+    "id": "123",
+    "email": "user@example.com",
+    "firstName": "John",
+    "lastName": "Smith",
+    "phone": "+1234567890",
+    "address": "123 Main St",
+    "updatedAt": "2023-01-01T00:00:00.000Z"
   }
 }
 ```
 
-### Verify Email
-
-Verifies a user's email address.
+#### Change Password
 
 ```
-GET /auth/verify-email/:token
+POST /users/change-password
 ```
 
-#### Response
+**Request Body:**
 
 ```json
 {
-  "status": "success",
-  "message": "Email verified successfully",
-  "data": {
-    "user": {
-      "id": 1,
-      "email": "user@example.com",
-      "firstName": "John",
-      "lastName": "Doe",
-      "role": "MEMBER",
-      "status": "ACTIVE"
-    }
-  }
+  "currentPassword": "password123",
+  "newPassword": "newPassword123",
+  "confirmPassword": "newPassword123"
 }
 ```
 
-### Reset Password
-
-Sends a password reset email.
-
-```
-POST /auth/reset-password
-```
-
-#### Request
-
-```json
-{
-  "email": "user@example.com"
-}
-```
-
-#### Response
-
-```json
-{
-  "status": "success",
-  "message": "Password reset email sent"
-}
-```
-
-### Change Password
-
-Changes a user's password.
-
-```
-POST /auth/change-password
-```
-
-#### Request
-
-```json
-{
-  "oldPassword": "password123",
-  "newPassword": "newPassword123"
-}
-```
-
-#### Response
+**Response:**
 
 ```json
 {
@@ -186,798 +176,300 @@ POST /auth/change-password
 }
 ```
 
-## User Management
+### Loan Management
 
-### Get Users
-
-Returns a list of users.
+#### Apply for Loan
 
 ```
-GET /users
+POST /loans/apply
 ```
 
-#### Query Parameters
+**Request Body:**
 
-- `page`: Page number (default: 1)
-- `limit`: Number of users per page (default: 10)
-- `search`: Search term
-- `role`: Filter by role
-- `status`: Filter by status
+```json
+{
+  "amount": 10000,
+  "term": 12,
+  "purpose": "Home renovation",
+  "collateral": "Car title",
+  "collateralValue": 15000
+}
+```
 
-#### Response
+**Response:**
 
 ```json
 {
   "status": "success",
-  "message": "Users retrieved successfully",
   "data": {
-    "users": [
+    "id": "loan_123",
+    "amount": 10000,
+    "term": 12,
+    "purpose": "Home renovation",
+    "status": "PENDING",
+    "referenceNumber": "LOAN-2023-0042",
+    "createdAt": "2023-01-01T00:00:00.000Z"
+  }
+}
+```
+
+#### Get Loan Details
+
+```
+GET /loans/:id
+```
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "id": "loan_123",
+    "amount": 10000,
+    "term": 12,
+    "purpose": "Home renovation",
+    "status": "APPROVED",
+    "referenceNumber": "LOAN-2023-0042",
+    "interestRate": 12,
+    "monthlyPayment": 888.49,
+    "totalInterest": 661.88,
+    "totalPayment": 10661.88,
+    "disbursementDate": "2023-01-15T00:00:00.000Z",
+    "firstPaymentDate": "2023-02-15T00:00:00.000Z",
+    "lastPaymentDate": "2024-01-15T00:00:00.000Z",
+    "createdAt": "2023-01-01T00:00:00.000Z",
+    "updatedAt": "2023-01-10T00:00:00.000Z"
+  }
+}
+```
+
+#### Get User Loans
+
+```
+GET /loans
+```
+
+**Query Parameters:**
+
+- `status`: Filter by status (PENDING, APPROVED, REJECTED, ACTIVE, COMPLETED)
+- `page`: Page number (default: 1)
+- `limit`: Items per page (default: 10)
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "loans": [
       {
-        "id": 1,
-        "email": "user@example.com",
-        "firstName": "John",
-        "lastName": "Doe",
-        "role": "ADMIN",
-        "status": "ACTIVE",
+        "id": "loan_123",
+        "amount": 10000,
+        "term": 12,
+        "purpose": "Home renovation",
+        "status": "APPROVED",
+        "referenceNumber": "LOAN-2023-0042",
         "createdAt": "2023-01-01T00:00:00.000Z"
       }
     ],
     "pagination": {
+      "total": 1,
       "page": 1,
       "limit": 10,
-      "total": 1,
-      "totalPages": 1
+      "pages": 1
     }
   }
 }
 ```
 
-### Get User by ID
+### E-Wallet
 
-Returns a user by ID.
+#### Get Wallet Balance
 
 ```
-GET /users/:id
+GET /wallet/balance
 ```
 
-#### Response
+**Response:**
 
 ```json
 {
   "status": "success",
-  "message": "User retrieved successfully",
   "data": {
-    "user": {
-      "id": 1,
-      "email": "user@example.com",
-      "firstName": "John",
-      "lastName": "Doe",
-      "role": "ADMIN",
-      "status": "ACTIVE",
-      "createdAt": "2023-01-01T00:00:00.000Z"
-    }
+    "balance": 5000,
+    "currency": "PHP",
+    "updatedAt": "2023-01-01T00:00:00.000Z"
   }
 }
 ```
 
-### Create User
-
-Creates a new user.
+#### Get Transaction History
 
 ```
-POST /users
+GET /wallet/transactions
 ```
 
-#### Request
+**Query Parameters:**
 
-```json
-{
-  "email": "user@example.com",
-  "password": "password123",
-  "firstName": "John",
-  "lastName": "Doe",
-  "role": "MEMBER",
-  "phoneNumber": "+1234567890",
-  "address": "123 Main St",
-  "dateOfBirth": "1990-01-01",
-  "passwordSetupMethod": "manual"
-}
-```
-
-#### Response
-
-```json
-{
-  "status": "success",
-  "message": "User created successfully",
-  "data": {
-    "user": {
-      "id": 1,
-      "email": "user@example.com",
-      "firstName": "John",
-      "lastName": "Doe",
-      "role": "MEMBER",
-      "status": "PENDING_VERIFICATION",
-      "createdAt": "2023-01-01T00:00:00.000Z"
-    }
-  }
-}
-```
-
-### Update User
-
-Updates a user.
-
-```
-PUT /users/:id
-```
-
-#### Request
-
-```json
-{
-  "firstName": "John",
-  "lastName": "Smith",
-  "phoneNumber": "+0987654321",
-  "address": "456 Main St"
-}
-```
-
-#### Response
-
-```json
-{
-  "status": "success",
-  "message": "User updated successfully",
-  "data": {
-    "user": {
-      "id": 1,
-      "email": "user@example.com",
-      "firstName": "John",
-      "lastName": "Smith",
-      "role": "MEMBER",
-      "status": "ACTIVE",
-      "phoneNumber": "+0987654321",
-      "address": "456 Main St",
-      "createdAt": "2023-01-01T00:00:00.000Z",
-      "updatedAt": "2023-01-02T00:00:00.000Z"
-    }
-  }
-}
-```
-
-### Change User Role
-
-Changes a user's role.
-
-```
-PUT /users/:id/role
-```
-
-#### Request
-
-```json
-{
-  "role": "ADMIN"
-}
-```
-
-#### Response
-
-```json
-{
-  "status": "success",
-  "message": "User role changed successfully",
-  "data": {
-    "user": {
-      "id": 1,
-      "email": "user@example.com",
-      "firstName": "John",
-      "lastName": "Doe",
-      "role": "ADMIN",
-      "status": "ACTIVE",
-      "createdAt": "2023-01-01T00:00:00.000Z",
-      "updatedAt": "2023-01-02T00:00:00.000Z"
-    }
-  }
-}
-```
-
-### Change User Status
-
-Changes a user's status.
-
-```
-PUT /users/:id/status
-```
-
-#### Request
-
-```json
-{
-  "status": "INACTIVE",
-  "reason": "User request"
-}
-```
-
-#### Response
-
-```json
-{
-  "status": "success",
-  "message": "User status changed successfully",
-  "data": {
-    "user": {
-      "id": 1,
-      "email": "user@example.com",
-      "firstName": "John",
-      "lastName": "Doe",
-      "role": "MEMBER",
-      "status": "INACTIVE",
-      "createdAt": "2023-01-01T00:00:00.000Z",
-      "updatedAt": "2023-01-02T00:00:00.000Z"
-    }
-  }
-}
-```
-
-### Delete User
-
-Deletes a user.
-
-```
-DELETE /users/:id
-```
-
-#### Response
-
-```json
-{
-  "status": "success",
-  "message": "User deleted successfully"
-}
-```
-
-### Import Users
-
-Imports multiple users.
-
-```
-POST /users/import
-```
-
-#### Request
-
-```json
-{
-  "users": [
-    {
-      "email": "user1@example.com",
-      "firstName": "User",
-      "lastName": "One",
-      "role": "MEMBER",
-      "phoneNumber": "+1234567890",
-      "address": "123 Main St",
-      "dateOfBirth": "1990-01-01"
-    },
-    {
-      "email": "user2@example.com",
-      "firstName": "User",
-      "lastName": "Two",
-      "role": "MEMBER",
-      "phoneNumber": "+0987654321",
-      "address": "456 Main St",
-      "dateOfBirth": "1991-02-02"
-    }
-  ],
-  "passwordSetupMethod": "email"
-}
-```
-
-#### Response
-
-```json
-{
-  "status": "success",
-  "message": "Successfully imported 2 users",
-  "data": {
-    "importedCount": 2,
-    "successCount": 2,
-    "failureCount": 0,
-    "users": [
-      {
-        "id": 1,
-        "email": "user1@example.com",
-        "firstName": "User",
-        "lastName": "One",
-        "role": "MEMBER",
-        "status": "PENDING_VERIFICATION",
-        "createdAt": "2023-01-01T00:00:00.000Z"
-      },
-      {
-        "id": 2,
-        "email": "user2@example.com",
-        "firstName": "User",
-        "lastName": "Two",
-        "role": "MEMBER",
-        "status": "PENDING_VERIFICATION",
-        "createdAt": "2023-01-01T00:00:00.000Z"
-      }
-    ]
-  }
-}
-```
-
-## Audit Logging
-
-### Create Audit Log
-
-Creates an audit log entry.
-
-```
-POST /audit-logs
-```
-
-#### Request
-
-```json
-{
-  "actionType": "USER_CREATED",
-  "performedBy": {
-    "id": 1,
-    "email": "admin@example.com",
-    "name": "Admin User"
-  },
-  "timestamp": "2023-01-01T00:00:00.000Z",
-  "targetUser": {
-    "id": 2,
-    "email": "user@example.com",
-    "name": "John Doe"
-  },
-  "details": {
-    "creationMethod": "manual",
-    "userRole": "MEMBER"
-  },
-  "ipAddress": "192.168.1.1",
-  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-}
-```
-
-#### Response
-
-```json
-{
-  "status": "success",
-  "message": "Audit log created successfully",
-  "data": {
-    "id": 1,
-    "actionType": "USER_CREATED",
-    "performedBy": {
-      "id": 1,
-      "email": "admin@example.com",
-      "name": "Admin User"
-    },
-    "timestamp": "2023-01-01T00:00:00.000Z",
-    "targetUser": {
-      "id": 2,
-      "email": "user@example.com",
-      "name": "John Doe"
-    },
-    "details": {
-      "creationMethod": "manual",
-      "userRole": "MEMBER"
-    },
-    "ipAddress": "192.168.1.1",
-    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-  }
-}
-```
-
-### Get Audit Logs
-
-Returns a list of audit logs.
-
-```
-GET /audit-logs
-```
-
-#### Query Parameters
-
+- `type`: Filter by type (DEPOSIT, WITHDRAWAL, TRANSFER, PAYMENT)
+- `startDate`: Filter by start date (YYYY-MM-DD)
+- `endDate`: Filter by end date (YYYY-MM-DD)
 - `page`: Page number (default: 1)
-- `limit`: Number of logs per page (default: 10)
-- `actionType`: Filter by action type
-- `userId`: Filter by target user ID
-- `startDate`: Filter by start date
-- `endDate`: Filter by end date
-- `search`: Search term
+- `limit`: Items per page (default: 10)
 
-#### Response
+**Response:**
 
 ```json
 {
   "status": "success",
-  "message": "Audit logs retrieved successfully",
-  "data": {
-    "logs": [
-      {
-        "id": 1,
-        "actionType": "USER_CREATED",
-        "performedBy": {
-          "id": 1,
-          "email": "admin@example.com",
-          "name": "Admin User"
-        },
-        "timestamp": "2023-01-01T00:00:00.000Z",
-        "targetUser": {
-          "id": 2,
-          "email": "user@example.com",
-          "name": "John Doe"
-        },
-        "details": {
-          "creationMethod": "manual",
-          "userRole": "MEMBER"
-        },
-        "ipAddress": "192.168.1.1",
-        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-      }
-    ],
-    "pagination": {
-      "page": 1,
-      "limit": 10,
-      "total": 1,
-      "totalPages": 1
-    }
-  }
-}
-```
-
-## E-Wallet
-
-### Create E-Wallet
-
-Creates an e-wallet for a user.
-
-```
-POST /e-wallets
-```
-
-#### Request
-
-```json
-{
-  "userId": 1,
-  "initialBalance": 0
-}
-```
-
-#### Response
-
-```json
-{
-  "status": "success",
-  "message": "E-Wallet created successfully",
-  "data": {
-    "walletId": "WALLET-123456",
-    "userId": 1,
-    "balance": 0,
-    "status": "ACTIVE",
-    "createdAt": "2023-01-01T00:00:00.000Z"
-  }
-}
-```
-
-### Get E-Wallet
-
-Returns an e-wallet by ID.
-
-```
-GET /e-wallets/:id
-```
-
-#### Response
-
-```json
-{
-  "status": "success",
-  "message": "E-Wallet retrieved successfully",
-  "data": {
-    "walletId": "WALLET-123456",
-    "userId": 1,
-    "balance": 100.50,
-    "status": "ACTIVE",
-    "createdAt": "2023-01-01T00:00:00.000Z",
-    "updatedAt": "2023-01-02T00:00:00.000Z"
-  }
-}
-```
-
-### Get User E-Wallet
-
-Returns a user's e-wallet.
-
-```
-GET /users/:id/e-wallet
-```
-
-#### Response
-
-```json
-{
-  "status": "success",
-  "message": "E-Wallet retrieved successfully",
-  "data": {
-    "walletId": "WALLET-123456",
-    "userId": 1,
-    "balance": 100.50,
-    "status": "ACTIVE",
-    "createdAt": "2023-01-01T00:00:00.000Z",
-    "updatedAt": "2023-01-02T00:00:00.000Z"
-  }
-}
-```
-
-### Deposit
-
-Deposits funds into an e-wallet.
-
-```
-POST /e-wallets/:id/deposit
-```
-
-#### Request
-
-```json
-{
-  "amount": 100.50,
-  "description": "Salary deposit"
-}
-```
-
-#### Response
-
-```json
-{
-  "status": "success",
-  "message": "Deposit successful",
-  "data": {
-    "transactionId": "TXN-123456",
-    "walletId": "WALLET-123456",
-    "amount": 100.50,
-    "type": "DEPOSIT",
-    "description": "Salary deposit",
-    "balance": 200.50,
-    "createdAt": "2023-01-01T00:00:00.000Z"
-  }
-}
-```
-
-### Withdraw
-
-Withdraws funds from an e-wallet.
-
-```
-POST /e-wallets/:id/withdraw
-```
-
-#### Request
-
-```json
-{
-  "amount": 50.25,
-  "description": "ATM withdrawal"
-}
-```
-
-#### Response
-
-```json
-{
-  "status": "success",
-  "message": "Withdrawal successful",
-  "data": {
-    "transactionId": "TXN-123457",
-    "walletId": "WALLET-123456",
-    "amount": 50.25,
-    "type": "WITHDRAWAL",
-    "description": "ATM withdrawal",
-    "balance": 150.25,
-    "createdAt": "2023-01-01T00:00:00.000Z"
-  }
-}
-```
-
-### Transfer
-
-Transfers funds from one e-wallet to another.
-
-```
-POST /e-wallets/:id/transfer
-```
-
-#### Request
-
-```json
-{
-  "recipientWalletId": "WALLET-654321",
-  "amount": 25.75,
-  "description": "Fund transfer"
-}
-```
-
-#### Response
-
-```json
-{
-  "status": "success",
-  "message": "Transfer successful",
-  "data": {
-    "transactionId": "TXN-123458",
-    "walletId": "WALLET-123456",
-    "recipientWalletId": "WALLET-654321",
-    "amount": 25.75,
-    "type": "TRANSFER",
-    "description": "Fund transfer",
-    "balance": 124.50,
-    "createdAt": "2023-01-01T00:00:00.000Z"
-  }
-}
-```
-
-### Get Transactions
-
-Returns a list of transactions for an e-wallet.
-
-```
-GET /e-wallets/:id/transactions
-```
-
-#### Query Parameters
-
-- `page`: Page number (default: 1)
-- `limit`: Number of transactions per page (default: 10)
-- `type`: Filter by transaction type (DEPOSIT, WITHDRAWAL, TRANSFER, PAYMENT)
-- `startDate`: Filter by start date
-- `endDate`: Filter by end date
-
-#### Response
-
-```json
-{
-  "status": "success",
-  "message": "Transactions retrieved successfully",
   "data": {
     "transactions": [
       {
-        "transactionId": "TXN-123456",
-        "walletId": "WALLET-123456",
-        "amount": 100.50,
+        "id": "txn_123",
         "type": "DEPOSIT",
-        "description": "Salary deposit",
-        "balance": 200.50,
-        "createdAt": "2023-01-01T00:00:00.000Z"
-      },
-      {
-        "transactionId": "TXN-123457",
-        "walletId": "WALLET-123456",
-        "amount": 50.25,
-        "type": "WITHDRAWAL",
-        "description": "ATM withdrawal",
-        "balance": 150.25,
+        "amount": 1000,
+        "currency": "PHP",
+        "description": "Bank deposit",
+        "status": "COMPLETED",
         "createdAt": "2023-01-01T00:00:00.000Z"
       }
     ],
     "pagination": {
+      "total": 1,
       "page": 1,
       "limit": 10,
-      "total": 2,
-      "totalPages": 1
+      "pages": 1
     }
   }
 }
 ```
 
-### Update E-Wallet Settings
-
-Updates e-wallet settings.
+#### Transfer Funds
 
 ```
-PUT /e-wallets/:id/settings
+POST /wallet/transfer
 ```
 
-#### Request
+**Request Body:**
 
 ```json
 {
-  "dailyLimit": 1000,
-  "transactionNotifications": true,
-  "securityLevel": "high"
+  "recipientId": "user_456",
+  "amount": 500,
+  "description": "Repayment"
 }
 ```
 
-#### Response
+**Response:**
 
 ```json
 {
   "status": "success",
-  "message": "E-Wallet settings updated successfully",
   "data": {
-    "walletId": "WALLET-123456",
-    "userId": 1,
-    "settings": {
-      "dailyLimit": 1000,
-      "transactionNotifications": true,
-      "securityLevel": "high"
-    },
-    "updatedAt": "2023-01-02T00:00:00.000Z"
+    "transactionId": "txn_789",
+    "amount": 500,
+    "recipientId": "user_456",
+    "description": "Repayment",
+    "status": "COMPLETED",
+    "createdAt": "2023-01-01T00:00:00.000Z"
   }
 }
 ```
 
-## Error Handling
+### Damayan Fund
 
-All API endpoints return a consistent error format:
+#### Get Damayan Status
 
-```json
-{
-  "status": "error",
-  "message": "Error message",
-  "errors": [
-    {
-      "field": "email",
-      "message": "Email is required"
-    }
-  ]
-}
+```
+GET /damayan/status
 ```
 
-### Common Error Codes
-
-- `400 Bad Request`: Invalid request parameters
-- `401 Unauthorized`: Missing or invalid authentication
-- `403 Forbidden`: Insufficient permissions
-- `404 Not Found`: Resource not found
-- `409 Conflict`: Resource already exists
-- `422 Unprocessable Entity`: Validation error
-- `500 Internal Server Error`: Server error
-
-## Rate Limiting
-
-The API implements rate limiting to prevent abuse. The rate limits are:
-
-- `60` requests per minute for authenticated users
-- `20` requests per minute for unauthenticated users
-
-Rate limit information is included in the response headers:
-
-- `X-RateLimit-Limit`: Maximum number of requests allowed per minute
-- `X-RateLimit-Remaining`: Number of requests remaining in the current minute
-- `X-RateLimit-Reset`: Time in seconds until the rate limit resets
-
-When the rate limit is exceeded, the API returns a `429 Too Many Requests` error:
+**Response:**
 
 ```json
 {
-  "status": "error",
-  "message": "Rate limit exceeded. Please try again in 30 seconds."
-}
-```
-
-## Pagination
-
-All endpoints that return lists of resources support pagination. The pagination parameters are:
-
-- `page`: Page number (default: 1)
-- `limit`: Number of items per page (default: 10, max: 100)
-
-The response includes pagination information:
-
-```json
-{
-  "pagination": {
-    "page": 1,
-    "limit": 10,
-    "total": 100,
-    "totalPages": 10
+  "status": "success",
+  "data": {
+    "totalFund": 250000,
+    "memberCount": 500,
+    "activeClaims": 2,
+    "userContribution": 500,
+    "userStatus": "ACTIVE",
+    "lastContribution": "2023-01-01T00:00:00.000Z"
   }
 }
 ```
+
+#### Submit Assistance Request
+
+```
+POST /damayan/request
+```
+
+**Request Body:**
+
+```json
+{
+  "reason": "Medical emergency",
+  "amount": 10000,
+  "documents": ["doc_123", "doc_456"],
+  "additionalInfo": "Hospital admission for surgery"
+}
+```
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "requestId": "req_123",
+    "status": "PENDING",
+    "createdAt": "2023-01-01T00:00:00.000Z"
+  }
+}
+```
+
+## Webhooks
+
+The API provides webhooks for real-time notifications of events. To use webhooks, register a webhook URL:
+
+```
+POST /webhooks
+```
+
+**Request Body:**
+
+```json
+{
+  "url": "https://example.com/webhook",
+  "events": ["loan.approved", "transaction.completed"],
+  "secret": "your_webhook_secret"
+}
+```
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "id": "wh_123",
+    "url": "https://example.com/webhook",
+    "events": ["loan.approved", "transaction.completed"],
+    "createdAt": "2023-01-01T00:00:00.000Z"
+  }
+}
+```
+
+## API Versioning
+
+The API uses URL versioning (e.g., `/api/v1/`). When a new version is released, the old version will be maintained for a deprecation period before being removed.
+
+## Support
+
+For API support, please contact:
+
+- Email: api-support@cooperativesystem.com
+- Documentation: https://docs.cooperativesystem.com

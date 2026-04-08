@@ -1,0 +1,23 @@
++------------------------------------------------------------+
+|                                                            |
+|                                                            |
+|                   EWALLET-TRANSFER                         |
+|                                                            |
+|                    Fund Transfer                           |
+|                                                            |
+|                                                            |
+|                Placeholder for presentation                |
+|                                                            |
+|  +------------------+        +----------------------+      |
+|  | Transfer Form    |        | Recipient Selection  |      |
+|  | Amount: ₱1,000   |        | Juan Dela Cruz      |      |
+|  | Purpose: Payment |        | Maria Santos        |      |
+|  +------------------+        +----------------------+      |
+|                                                            |
+|  +------------------+                                      |
+|  | Transfer Success |                                      |
+|  | ✓ Funds sent to  |                                      |
+|  | Juan Dela Cruz   |                                      |
+|  +------------------+                                      |
+|                                                            |
++------------------------------------------------------------+

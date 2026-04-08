@@ -1,0 +1,445 @@
+{
+  "metadata": {
+    "title": "AI-Ready Architecture Docs: Philippine Savings and Loan Cooperative",
+    "version": "1.0",
+    "domain": "savings_and_loan_cooperative"
+  },
+  "scope": {
+    "in_scope": [
+      "member_onboarding_and_kyc",
+      "member_profile_and_references",
+      "share_capital_and_savings_ledgers",
+      "loan_origination_approval_release_servicing",
+      "treasury_cashiering_transfers_disbursements",
+      "general_ledger_subledgers_period_close",
+      "governance_records_and_approvals",
+      "compliance_data_capture_cda_bir",
+      "audit_trails_and_controls",
+      "api_boundaries_and_integrations"
+    ],
+    "out_of_scope_mvp": [
+      "mobile_banking_grade_payments_orchestration",
+      "full_hr_or_payroll_unless_required",
+      "advanced_ifrs_consolidation",
+      "collection_agency_management",
+      "advanced_fraud_scoring_ml"
+    ]
+  },
+  "assumptions": [
+    "cda_registered_and_under_philippine_cooperative_code",
+    "credit_services_requires_configurable_controls",
+    "accounting_records_align_to_cda_reporting",
+    "bir_tax_exemption_and_member_tin_tracking_may_apply",
+    "legal_tax_regulatory_validation_pre_production"
+  ],
+  "design_principles": [
+    "configuration_over_customization",
+    "ledger_integrity_first",
+    "maker_checker_for_sensitive_actions",
+    "document_backed_transactions",
+    "balances_traceable_to_event_document_batch",
+    "compliance_evidence_captured_at_transaction_time",
+    "no_direct_edits_to_posted_transactions",
+    "branch_aware_centrally_governed",
+    "role_based_access_with_sod",
+    "human_and_ai_readable_specs"
+  ],
+  "architecture": {
+    "option": "modular_monolith_strong_boundaries",
+    "evolution_path": [
+      "notifications_service",
+      "document_or_ocr_service",
+      "reporting_service",
+      "channel_or_api_gateway",
+      "credit_scoring_or_collections_service"
+    ],
+    "layers": [
+      "experience",
+      "application",
+      "domain",
+      "data",
+      "integration"
+    ]
+  },
+  "modules": {
+    "core": [
+      "cooperative_profile_and_parameters",
+      "member_management",
+      "kyc_and_document_management",
+      "share_capital_and_capital_build_up",
+      "savings_products_and_accounts",
+      "loan_products_and_servicing",
+      "collections_and_disbursements",
+      "cashiering_and_treasury",
+      "general_ledger_and_financial_accounting",
+      "governance_and_resolutions",
+      "compliance_and_report_preparation",
+      "audit_trail_and_internal_controls",
+      "user_role_and_access_admin",
+      "integration_and_data_exchange"
+    ],
+    "optional": [
+      "payroll_deduction_integration",
+      "sms_email_notifications",
+      "member_self_service_portal",
+      "branch_liquidity_management",
+      "insurance_tagging",
+      "delinquency_and_field_collections",
+      "bi_dashboards_and_data_warehouse"
+    ]
+  },
+  "domain_model": {
+    "aggregates": [
+      "Cooperative",
+      "Branch",
+      "Member",
+      "MembershipApplication",
+      "KYCProfile",
+      "MemberDocument",
+      "ShareCapitalAccount",
+      "SavingsAccount",
+      "SavingsProduct",
+      "LoanProduct",
+      "LoanApplication",
+      "CreditAssessment",
+      "LoanAccount",
+      "AmortizationSchedule",
+      "CollectionReceipt",
+      "DisbursementVoucher",
+      "CashSession",
+      "JournalBatch",
+      "JournalEntry",
+      "JournalLine",
+      "GeneralLedgerAccount",
+      "SubsidiaryLedgerAccount",
+      "BoardResolution",
+      "CommitteeDecision",
+      "ComplianceRequirement",
+      "FilingCalendarItem",
+      "ReportSubmission",
+      "AuditEvent",
+      "ExceptionCase"
+    ],
+    "relationships": [
+      "cooperative_has_many_branches",
+      "member_has_many_savings_and_loan_accounts",
+      "loan_application_belongs_to_member_and_loan_product",
+      "approved_application_becomes_loan_account",
+      "loan_account_has_schedule_charges_receipts_events",
+      "financial_event_produces_journal_entries",
+      "compliance_requirement_maps_to_fields_reports_tasks"
+    ],
+    "data_rules": [
+      "stable_account_identifier",
+      "transaction_has_effective_and_posting_dates_and_source",
+      "immutable_audit_event_for_balance_mutations",
+      "no_soft_delete_for_posted_financial_records",
+      "field_level_protection_for_sensitive_pii"
+    ]
+  },
+  "workflows": {
+    "member_onboarding": [
+      "capture_application",
+      "capture_identity_contact_beneficiary_employer_tax",
+      "collect_kyc_documents",
+      "screen_duplicates_and_sanctions",
+      "route_for_membership_approval",
+      "create_member_master",
+      "open_default_share_capital_and_optional_savings",
+      "generate_member_number_and_packet"
+    ],
+    "share_capital_build_up": [
+      "define_capital_build_up_rule",
+      "accept_contribution",
+      "post_member_ledger_transaction",
+      "generate_accounting_entries",
+      "update_capital_balance_and_certificate"
+    ],
+    "savings_deposit_withdrawal": [
+      "select_account_validate_status",
+      "validate_teller_session_and_cash_limits",
+      "accept_transaction_with_source_doc",
+      "apply_holds_fees_restrictions",
+      "post_to_account_ledger",
+      "generate_receipt_and_accounting_entries",
+      "update_cash_drawer_and_branch_position"
+    ],
+    "loan_origination": [
+      "create_loan_application",
+      "validate_product_eligibility",
+      "gather_documents_and_comakers",
+      "run_credit_investigation",
+      "route_to_approving_body",
+      "record_decision_and_conditions",
+      "generate_release_documents",
+      "release_loan_and_create_schedule",
+      "post_accounting_entries_and_disbursement"
+    ],
+    "loan_collection": [
+      "select_loan_account",
+      "determine_due_amounts",
+      "apply_payment_allocation",
+      "produce_official_receipt",
+      "update_amortization_and_delinquency",
+      "post_accounting_entries",
+      "reconcile_cash_and_collection_channels"
+    ],
+    "loan_restructuring": [
+      "raise_restructuring_request",
+      "capture_reason_and_evidence",
+      "freeze_old_schedule",
+      "route_approval",
+      "generate_new_terms_and_schedule",
+      "preserve_linkage_to_original_history",
+      "post_adjustment_entries"
+    ],
+    "period_close": [
+      "lock_open_windows",
+      "complete_accruals_and_batch_jobs",
+      "review_suspense_and_exceptions",
+      "validate_subledger_to_gl_reconciliation",
+      "close_accounting_period",
+      "generate_statements_and_report_packs",
+      "archive_compliance_evidence_snapshot"
+    ]
+  },
+  "api_boundaries": {
+    "internal": {
+      "member_service": [
+        "POST /members/applications",
+        "POST /members/{id}/approve",
+        "GET /members/{id}"
+      ],
+      "savings_service": [
+        "POST /savings/accounts",
+        "POST /savings/transactions/deposit",
+        "POST /savings/transactions/withdraw",
+        "GET /savings/accounts/{id}/ledger"
+      ],
+      "loans_service": [
+        "POST /loans/applications",
+        "POST /loans/applications/{id}/submit",
+        "POST /loans/applications/{id}/decision",
+        "POST /loans/accounts/{id}/collect",
+        "POST /loans/accounts/{id}/restructure"
+      ],
+      "accounting_service": [
+        "POST /journals/post-batch",
+        "GET /gl/trial-balance",
+        "GET /reconciliation/exceptions"
+      ],
+      "compliance_service": [
+        "GET /compliance/calendar",
+        "POST /compliance/submissions",
+        "GET /reports/capr-dataset"
+      ]
+    },
+    "integrations": [
+      "payroll_deduction_import",
+      "bank_statement_import",
+      "sms_email_notification_gateway",
+      "document_scan_upload_channel",
+      "external_bi_export",
+      "government_filing_support_export"
+    ],
+    "events": [
+      "member.approved",
+      "share_capital.contribution_posted",
+      "savings.deposit_posted",
+      "savings.withdrawal_posted",
+      "loan.application_submitted",
+      "loan.application_approved",
+      "loan.disbursed",
+      "loan.payment_posted",
+      "loan.restructured",
+      "journal.batch_posted",
+      "compliance.report_generated",
+      "compliance.submission_recorded"
+    ]
+  },
+  "reports": {
+    "operational": [
+      "membership_master_list",
+      "new_members_and_exits",
+      "share_capital_balances",
+      "savings_balances_and_dormancy",
+      "loan_aging_and_delinquency",
+      "collection_efficiency",
+      "branch_cash_position",
+      "teller_proof_sheet",
+      "daily_transaction_register"
+    ],
+    "accounting": [
+      "trial_balance",
+      "general_ledger",
+      "subsidiary_ledgers",
+      "cash_receipts_and_disbursements",
+      "bank_reconciliation",
+      "statement_of_financial_position",
+      "statement_of_operations",
+      "notes_support_schedules"
+    ],
+    "governance_compliance": [
+      "board_approved_loans_register",
+      "committee_decisions_log",
+      "filing_calendar_dashboard",
+      "report_submission_tracker",
+      "accountable_officer_certification_tracker",
+      "member_tin_completeness_dashboard",
+      "cda_reporting_data_extracts"
+    ]
+  },
+  "nfr": {
+    "security": [
+      "encryption_in_transit_and_at_rest",
+      "strong_password_or_mfa_for_privileged_users",
+      "session_timeout_and_device_logging",
+      "field_masking_for_tin_and_sensitive_ids",
+      "attachment_malware_scanning_if_available"
+    ],
+    "auditability": [
+      "immutable_business_event_log",
+      "before_after_values_for_master_data_changes",
+      "timestamp_actor_role_ip_or_device_metadata",
+      "signed_export_manifests"
+    ],
+    "reliability": [
+      "acid_transactions_for_financial_posting",
+      "idempotency_keys_for_api_transactions",
+      "retry_safe_integration_jobs",
+      "daily_backups_and_restore_drills"
+    ],
+    "performance": [
+      "teller_transactions_under_2_seconds",
+      "loan_balance_inquiry_under_3_seconds",
+      "daily_close_batch_within_window",
+      "report_generation_with_extract_timestamps"
+    ]
+  },
+  "phased_delivery": [
+    {
+      "phase": 0,
+      "name": "discovery_and_control_design"
+    },
+    {
+      "phase": 1,
+      "name": "core_foundation"
+    },
+    {
+      "phase": 2,
+      "name": "savings_and_cashiering"
+    },
+    {
+      "phase": 3,
+      "name": "loans"
+    },
+    {
+      "phase": 4,
+      "name": "accounting_and_compliance"
+    },
+    {
+      "phase": 5,
+      "name": "optimization"
+    }
+  ],
+  "ai_ready_artifacts": {
+    "user_stories": [
+      {
+        "id": "MEM-001",
+        "as_a": "membership_officer",
+        "i_want": "encode_and_approve_member_application_through_maker_checker_flow",
+        "so_that": "only_complete_and_approved_members_can_transact"
+      },
+      {
+        "id": "LN-014",
+        "as_a": "credit_committee_member",
+        "i_want": "review_credit_assessment_collateral_and_exposure",
+        "so_that": "approvals_are_policy_compliant_and_auditable"
+      },
+      {
+        "id": "ACC-009",
+        "as_a": "accounting_officer",
+        "i_want": "savings_and_loan_transactions_generate_parameterized_journal_entries",
+        "so_that": "subledgers_reconcile_with_gl"
+      }
+    ],
+    "acceptance_criteria": [
+      {
+        "id": "AC-LN-014-01",
+        "given": "loan_application_with_complete_requirements",
+        "when": "committee_approves_application",
+        "then": "record_approver_identity_timestamp_conditions_and_basis"
+      },
+      {
+        "id": "AC-ACC-009-02",
+        "given": "posted_member_deposit_transaction",
+        "when": "posting_completes",
+        "then": "create_balanced_journal_entry_and_lock_source_transaction"
+      }
+    ],
+    "adr_template": {
+      "adr_id": "ADR-001",
+      "title": "use_modular_monolith_for_mvp",
+      "status": "proposed",
+      "context": "need_fast_delivery_with_strong_transactional_consistency",
+      "decision": "build_as_modular_monolith_with_event_ready_boundaries",
+      "consequences": {
+        "positive": [
+          "simpler_deployment",
+          "easier_financial_transaction_handling"
+        ],
+        "negative": [
+          "future_scaling_requires_discipline"
+        ]
+      }
+    },
+    "workflow_loan_origination": {
+      "trigger": "member_submits_application",
+      "preconditions": [
+        "member.status == active",
+        "member.kyc_status == complete",
+        "product.is_active == true"
+      ],
+      "steps": [
+        "validate_eligibility",
+        "collect_documents",
+        "assign_credit_investigator",
+        "perform_credit_assessment",
+        "prepare_recommendation",
+        "route_to_approving_body",
+        "record_decision",
+        "generate_release_documents",
+        "disburse_loan",
+        "create_amortization_schedule",
+        "post_accounting_entries"
+      ],
+      "outputs": [
+        "loan_account",
+        "document_packet",
+        "journal_entry_batch",
+        "audit_events"
+      ]
+    }
+  },
+  "open_decisions": [
+    "single_or_multi_branch_operations",
+    "payroll_deduction_integration_required",
+    "savings_product_types_and_dormancy_rules",
+    "loan_product_catalog_and_interest_methods",
+    "comaker_and_collateral_policies",
+    "manual_or_automated_accounting_close",
+    "level_of_governance_digitization",
+    "member_self_service_timing",
+    "bir_tax_exemption_renewal_and_evidence_workflow",
+    "future_multipurpose_modules_expected"
+  ],
+  "next_deliverables": [
+    "detailed_module_requirements_spec",
+    "erd_draft_with_field_dictionary",
+    "posting_rules_matrix_by_transaction_type",
+    "workflow_bpmn_or_swimlane_pack",
+    "cda_bir_compliance_matrix_for_this_coop",
+    "mvp_backlog_with_story_points",
+    "build_vs_buy_evaluation_criteria"
+  ]
+}
