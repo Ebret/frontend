@@ -11,6 +11,16 @@
 - Quickstart: `docs/architecture/quickstart.md`
 - Tooling artifacts: `docs/architecture/artifacts.yaml`, `docs/architecture/artifacts.json`
 - Glossary: `docs/architecture/glossary.md`
+- One-page summary: `docs/architecture/one-page-architecture.md`
+- Configuration registry: `docs/architecture/configuration-registry.md`
+- Ledger policy: `docs/architecture/ledger-policy.md`
+- Event versioning: `docs/architecture/event-versioning.md`
+- Branch vs head office ownership: `docs/architecture/branch-vs-ho-ownership.md`
+- Security and privacy controls: `docs/architecture/security-privacy-controls.md`
+- Compliance evidence pack: `docs/architecture/compliance-evidence-pack.md`
+- Testing matrix: `docs/architecture/testing-matrix.md`
+- Data migration playbook: `docs/architecture/data-migration-playbook.md`
+- Exception management: `docs/architecture/exception-management.md`
 
 ## 1. Document Purpose
 This package is a reusable architecture and implementation blueprint for a Philippine savings and loan cooperative. It is designed to be usable by:

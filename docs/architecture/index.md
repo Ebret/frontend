@@ -7,6 +7,7 @@
 - `docs/architecture/quickstart.md`: Implementer quickstart for sequencing and setup.
 - `docs/architecture/glossary.md`: Abbreviations and key terms.
 - `docs/architecture/ai-ready-artifacts.md`: AI workflows, machine-readable artifacts, and implementation notes.
+- `docs/architecture/one-page-architecture.md`: One-page summary for executive stakeholders.
 
 ## Requirements and Models
 - `docs/architecture/requirements.md`: Scope, assumptions, MVP scope, and non-functional requirements.
@@ -16,11 +17,17 @@
 - `docs/architecture/compliance-matrix.md`: CDA and BIR compliance data and evidence stub.
 - `docs/architecture/erd-and-fields.md`: ERD and core field dictionary.
 - `docs/architecture/data-ownership.md`: Domain ownership table for data stewardship.
+- `docs/architecture/branch-vs-ho-ownership.md`: Branch and head office ownership matrix.
+- `docs/architecture/configuration-registry.md`: Configuration registry and versioning rules.
+- `docs/architecture/ledger-policy.md`: Policy for postings, reversals, and back-dated entries.
+- `docs/architecture/event-versioning.md`: Event schema versioning policy.
+- `docs/architecture/security-privacy-controls.md`: Security and privacy controls appendix.
 
 ## Workflows and Diagrams
 - `docs/architecture/workflows.md`: Key workflows with step-by-step sequences.
 - `docs/architecture/diagrams.md`: Mermaid diagrams and swimlanes for quick visualization.
 - `docs/architecture/bpmn/`: BPMN-style Mermaid workflow diagrams (including `all-workflows.mmd`).
+- `docs/architecture/exception-management.md`: Exception types, workflow, and evidence.
 
 ## Tooling Artifacts
 - `docs/architecture/artifacts.yaml`: YAML artifacts for automation and AI tooling.
@@ -29,3 +36,6 @@
 ## Build Artifacts
 - `docs/architecture/mvp-backlog.md`: MVP epics, stories, and acceptance criteria.
 - `docs/architecture/api-boundaries-events.md`: API boundary map, events, and idempotency rules.
+- `docs/architecture/testing-matrix.md`: MVP test coverage matrix.
+- `docs/architecture/data-migration-playbook.md`: Migration steps and reconciliation checks.
+- `docs/architecture/compliance-evidence-pack.md`: Compliance evidence pack template.

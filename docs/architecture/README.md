@@ -14,6 +14,7 @@ This folder contains a reusable architecture and implementation blueprint for a 
 - `docs/architecture/artifacts.yaml`: Structured YAML artifacts for tooling.
 - `docs/architecture/artifacts.json`: Structured JSON artifacts for tooling.
 - `docs/architecture/ai-ready-artifacts.md`: AI workflows, machine-readable artifacts, and implementation notes.
+- `docs/architecture/one-page-architecture.md`: One-page summary for executive stakeholders.
 - `docs/architecture/product-catalog-spec.md`: Savings and loan product parameters, defaults, and validations.
 - `docs/architecture/posting-rules-matrix.md`: Draft mapping of transaction types to accounting templates.
 - `docs/architecture/compliance-matrix.md`: CDA and BIR compliance data and evidence stub.
@@ -22,6 +23,15 @@ This folder contains a reusable architecture and implementation blueprint for a 
 - `docs/architecture/api-boundaries-events.md`: API boundary map, events, and idempotency rules.
 - `docs/architecture/glossary.md`: Abbreviations and key terms.
 - `docs/architecture/data-ownership.md`: Data ownership table per domain.
+- `docs/architecture/branch-vs-ho-ownership.md`: Branch and head office ownership matrix.
+- `docs/architecture/configuration-registry.md`: Configuration registry and versioning rules.
+- `docs/architecture/ledger-policy.md`: Policy for postings, reversals, and back-dated entries.
+- `docs/architecture/event-versioning.md`: Event schema versioning policy.
+- `docs/architecture/security-privacy-controls.md`: Security and privacy controls appendix.
+- `docs/architecture/compliance-evidence-pack.md`: Compliance evidence pack template.
+- `docs/architecture/testing-matrix.md`: MVP test coverage matrix.
+- `docs/architecture/data-migration-playbook.md`: Migration steps and reconciliation checks.
+- `docs/architecture/exception-management.md`: Exception types, workflow, and evidence.
 
 ## Intended Use
 - Use the full document for alignment with stakeholders.

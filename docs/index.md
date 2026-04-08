@@ -94,10 +94,19 @@ The [AI-Ready Architecture Package](./architecture/README.md) provides reusable 
 Key package artifacts:
 - Architecture index: `docs/architecture/index.md`
 - AI workflows: `docs/architecture/ai-ready-artifacts.md`
+- One-page summary: `docs/architecture/one-page-architecture.md`
 - Product catalog spec: `docs/architecture/product-catalog-spec.md`
 - Posting rules matrix: `docs/architecture/posting-rules-matrix.md`
 - Compliance matrix: `docs/architecture/compliance-matrix.md`
 - ERD and field dictionary: `docs/architecture/erd-and-fields.md`
+- Configuration registry: `docs/architecture/configuration-registry.md`
+- Ledger policy: `docs/architecture/ledger-policy.md`
+- Event versioning: `docs/architecture/event-versioning.md`
+- Security and privacy controls: `docs/architecture/security-privacy-controls.md`
+- Compliance evidence pack: `docs/architecture/compliance-evidence-pack.md`
+- Testing matrix: `docs/architecture/testing-matrix.md`
+- Data migration playbook: `docs/architecture/data-migration-playbook.md`
+- Exception management: `docs/architecture/exception-management.md`
 - MVP backlog: `docs/architecture/mvp-backlog.md`
 - API boundaries and events: `docs/architecture/api-boundaries-events.md`
 

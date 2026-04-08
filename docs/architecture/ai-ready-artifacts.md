@@ -817,79 +817,84 @@ This document contains machine-readable artifacts for AI coding agents and imple
 
 All events follow the format: `{domain}.{aggregate}.{event}`
 
+### Versioning Policy
+- Event names include a version suffix, for example `loan.disbursed.v1`.
+- Additive fields are allowed within the same version.
+- Breaking changes require a version increment.
+
 ### Member Domain Events
 
 | Event | When Published | Payload |
 |-------|----------------|---------|
-| `member.application.submitted` | Member application submitted | `{ applicationId, memberId, submittedAt, submittedBy }` |
-| `member.application.approved` | Application approved | `{ applicationId, memberId, approvedAt, approvedBy, memberNo }` |
-| `member.application.declined` | Application declined | `{ applicationId, memberId, declinedAt, declinedBy, reason }` |
-| `member.created` | Member master record created | `{ memberId, memberNo, createdAt, createdBy }` |
-| `member.updated` | Member data changed | `{ memberId, changedFields, changedAt, changedBy }` |
-| `member.status.changed` | Member status changed | `{ memberId, oldStatus, newStatus, changedAt, changedBy }` |
+| `member.application.submitted.v1` | Member application submitted | `{ applicationId, memberId, submittedAt, submittedBy }` |
+| `member.application.approved.v1` | Application approved | `{ applicationId, memberId, approvedAt, approvedBy, memberNo }` |
+| `member.application.declined.v1` | Application declined | `{ applicationId, memberId, declinedAt, declinedBy, reason }` |
+| `member.created.v1` | Member master record created | `{ memberId, memberNo, createdAt, createdBy }` |
+| `member.updated.v1` | Member data changed | `{ memberId, changedFields, changedAt, changedBy }` |
+| `member.status.changed.v1` | Member status changed | `{ memberId, oldStatus, newStatus, changedAt, changedBy }` |
 
 ### Share Capital Events
 
 | Event | When Published | Payload |
 |-------|----------------|---------|
-| `share_capital.account.opened` | Share capital account created | `{ accountId, memberId, openingAmount, openedAt }` |
-| `share_capital.contribution.posted` | Contribution posted | `{ transactionId, accountId, amount, source, postedAt }` |
-| `share_capital.interest.posted` | Interest/dividend posted | `{ accountId, amount, period, postedAt }` |
+| `share_capital.account.opened.v1` | Share capital account created | `{ accountId, memberId, openingAmount, openedAt }` |
+| `share_capital.contribution.posted.v1` | Contribution posted | `{ transactionId, accountId, amount, source, postedAt }` |
+| `share_capital.interest.posted.v1` | Interest/dividend posted | `{ accountId, amount, period, postedAt }` |
 
 ### Savings Events
 
 | Event | When Published | Payload |
 |-------|----------------|---------|
-| `savings.account.opened` | Savings account created | `{ accountId, memberId, productCode, openedAt }` |
-| `savings.deposit.posted` | Deposit posted | `{ transactionId, accountId, amount, sourceDocument, postedAt }` |
-| `savings.withdrawal.posted` | Withdrawal posted | `{ transactionId, accountId, amount, sourceDocument, postedAt }` |
-| `savings.interest.accrued` | Interest accrued (not yet posted) | `{ accountId, amount, accrualDate }` |
-| `savings.fee.applied` | Fee applied (dormancy, transaction) | `{ accountId, feeType, amount, appliedAt }` |
-| `savings.account.closed` | Account closed | `{ accountId, closedAt, reason }` |
+| `savings.account.opened.v1` | Savings account created | `{ accountId, memberId, productCode, openedAt }` |
+| `savings.deposit.posted.v1` | Deposit posted | `{ transactionId, accountId, amount, sourceDocument, postedAt }` |
+| `savings.withdrawal.posted.v1` | Withdrawal posted | `{ transactionId, accountId, amount, sourceDocument, postedAt }` |
+| `savings.interest.accrued.v1` | Interest accrued (not yet posted) | `{ accountId, amount, accrualDate }` |
+| `savings.fee.applied.v1` | Fee applied (dormancy, transaction) | `{ accountId, feeType, amount, appliedAt }` |
+| `savings.account.closed.v1` | Account closed | `{ accountId, closedAt, reason }` |
 
 ### Loan Events
 
 | Event | When Published | Payload |
 |-------|----------------|---------|
-| `loan.application.submitted` | Loan application submitted | `{ applicationId, memberId, productCode, amount, submittedAt }` |
-| `loan.application.approved` | Application approved | `{ applicationId, approvedAt, approvedBy, conditions }` |
-| `loan.application.declined` | Application declined | `{ applicationId, declinedAt, declinedBy, reason }` |
-| `loan.account.created` | Loan account created from approved application | `{ loanAccountId, applicationId, disbursementDate, amortizationScheduleId }` |
-| `loan.disbursed` | Loan funds disbursed | `{ loanAccountId, amount, disbursementDate, method }` |
-| `loan.payment.posted` | Payment received and posted | `{ receiptId, loanAccountId, amount, allocation, postedAt }` |
-| `loan.restructured` | Loan restructured | `{ loanAccountId, oldScheduleId, newScheduleId, restructuredAt, reason }` |
-| `loan.written_off` | Loan written off | `{ loanAccountId, writtenOffAt, reason, writeOffAmount }` |
-| `loan.paid` | Loan fully paid | `{ loanAccountId, paidAt, totalPaid }` |
+| `loan.application.submitted.v1` | Loan application submitted | `{ applicationId, memberId, productCode, amount, submittedAt }` |
+| `loan.application.approved.v1` | Application approved | `{ applicationId, approvedAt, approvedBy, conditions }` |
+| `loan.application.declined.v1` | Application declined | `{ applicationId, declinedAt, declinedBy, reason }` |
+| `loan.account.created.v1` | Loan account created from approved application | `{ loanAccountId, applicationId, disbursementDate, amortizationScheduleId }` |
+| `loan.disbursed.v1` | Loan funds disbursed | `{ loanAccountId, amount, disbursementDate, method }` |
+| `loan.payment.posted.v1` | Payment received and posted | `{ receiptId, loanAccountId, amount, allocation, postedAt }` |
+| `loan.restructured.v1` | Loan restructured | `{ loanAccountId, oldScheduleId, newScheduleId, restructuredAt, reason }` |
+| `loan.written_off.v1` | Loan written off | `{ loanAccountId, writtenOffAt, reason, writeOffAmount }` |
+| `loan.paid.v1` | Loan fully paid | `{ loanAccountId, paidAt, totalPaid }` |
 
 ### Accounting Events
 
 | Event | When Published | Payload |
 |-------|----------------|---------|
-| `journal.batch.created` | Journal batch created | `{ batchId, description, createdBy, createdAt, entryCount }` |
-| `journal.batch.posted` | Batch posted to GL | `{ batchId, postingDate, postedBy, postedAt }` |
-| `journal.entry.reversed` | Journal entry reversed | `{ entryId, reversalEntryId, reversedAt, reversedBy }` |
-| `period.close.initiated` | Period close started | `{ periodId, initiatedBy, initiatedAt }` |
-| `period.close.completed` | Period close finished | `{ periodId, closedBy, closedAt, statementsGenerated }` |
+| `journal.batch.created.v1` | Journal batch created | `{ batchId, description, createdBy, createdAt, entryCount }` |
+| `journal.batch.posted.v1` | Batch posted to GL | `{ batchId, postingDate, postedBy, postedAt }` |
+| `journal.entry.reversed.v1` | Journal entry reversed | `{ entryId, reversalEntryId, reversedAt, reversedBy }` |
+| `period.close.initiated.v1` | Period close started | `{ periodId, initiatedBy, initiatedAt }` |
+| `period.close.completed.v1` | Period close finished | `{ periodId, closedBy, closedAt, statementsGenerated }` |
 
 ### Compliance Events
 
 | Event | When Published | Payload |
 |-------|----------------|---------|
-| `compliance.requirement.created` | New compliance requirement added | `{ requirementId, name, dueDate, responsibleRole }` |
-| `compliance.reminder.sent` | Reminder sent for upcoming deadline | `{ requirementId, reminderDate, recipients }` |
-| `compliance.report.submitted` | Report submitted to regulator | `{ requirementId, submissionId, submittedAt, submittedBy, attachmentIds }` |
-| `compliance.deficiency.identified` | Deficiency found | `{ requirementId, deficiencyId, identifiedAt, description }` |
+| `compliance.requirement.created.v1` | New compliance requirement added | `{ requirementId, name, dueDate, responsibleRole }` |
+| `compliance.reminder.sent.v1` | Reminder sent for upcoming deadline | `{ requirementId, reminderDate, recipients }` |
+| `compliance.report.submitted.v1` | Report submitted to regulator | `{ requirementId, submissionId, submittedAt, submittedBy, attachmentIds }` |
+| `compliance.deficiency.identified.v1` | Deficiency found | `{ requirementId, deficiencyId, identifiedAt, description }` |
 
 ### AI Workflow Events
 
 | Event | When Published | Payload |
 |-------|----------------|---------|
-| `member.document.uploaded` | Document uploaded for member | `{ memberId, documentId, documentType, uploadedAt }` |
-| `member.kyc_completed` | KYC checklist approved by human reviewer | `{ memberId, reviewedBy, reviewedAt }` |
-| `member.inquiry_received` | Member inquiry received via portal | `{ memberId, inquiryId, receivedAt, channel }` |
-| `member.inquiry_escalated` | Inquiry escalated to staff | `{ inquiryId, escalatedTo, escalatedAt, reason }` |
-| `loan.delinquency_bucketed` | Delinquency bucket updated | `{ loanAccountId, bucket, updatedAt }` |
-| `loan.collection_list_generated` | Collections list generated for the day | `{ listId, generatedAt, generatedBy }` |
+| `member.document.uploaded.v1` | Document uploaded for member | `{ memberId, documentId, documentType, uploadedAt }` |
+| `member.kyc_completed.v1` | KYC checklist approved by human reviewer | `{ memberId, reviewedBy, reviewedAt }` |
+| `member.inquiry_received.v1` | Member inquiry received via portal | `{ memberId, inquiryId, receivedAt, channel }` |
+| `member.inquiry_escalated.v1` | Inquiry escalated to staff | `{ inquiryId, escalatedTo, escalatedAt, reason }` |
+| `loan.delinquency_bucketed.v1` | Delinquency bucket updated | `{ loanAccountId, bucket, updatedAt }` |
+| `loan.collection_list_generated.v1` | Collections list generated for the day | `{ listId, generatedAt, generatedBy }` |
 
 ---
 
