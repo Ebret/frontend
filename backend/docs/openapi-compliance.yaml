@@ -1,0 +1,89 @@
+openapi: 3.0.3
+info:
+  title: Compliance Module API
+  version: 1.0.0
+paths:
+  /compliance/filings:
+    post:
+      summary: Create compliance filing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Created
+  /compliance/filings/{id}:
+    get:
+      summary: Get compliance filing
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+  /compliance/requirements:
+    post:
+      summary: List required modules for context
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: OK
+  /compliance/filings/{id}/modules/complete:
+    post:
+      summary: Mark module complete
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+  /compliance/filings/{id}/status:
+    post:
+      summary: Update filing status
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+  /compliance/filings/{id}/deficiencies:
+    post:
+      summary: Add deficiency notice
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Created
+  /compliance/filings/{id}/penalties:
+    post:
+      summary: Assess late penalty
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Created

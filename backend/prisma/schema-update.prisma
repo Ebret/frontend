@@ -1,0 +1,145 @@
+// Add these models to the existing schema.prisma file
+
+// Damayan Fund model
+model DamayanFund {
+  id                Int                 @id @default(autoincrement())
+  name              String
+  description       String?
+  balance           Float               @default(0)
+  status            DamayanFundStatus   @default(ACTIVE)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  cooperativeId     Int?
+  cooperative       Cooperative?        @relation(fields: [cooperativeId], references: [id])
+  contributions     DamayanContribution[]
+  assistanceRequests DamayanAssistance[]
+}
+
+// Damayan Contribution model
+model DamayanContribution {
+  id                Int                 @id @default(autoincrement())
+  amount            Float
+  contributionDate  DateTime            @default(now())
+  contributionType  DamayanContributionType
+  status            TransactionStatus   @default(COMPLETED)
+  userId            Int
+  user              User                @relation(fields: [userId], references: [id])
+  damayanFundId     Int
+  damayanFund       DamayanFund         @relation(fields: [damayanFundId], references: [id])
+  transactionId     Int?                @unique
+  transaction       Transaction?        @relation(fields: [transactionId], references: [id])
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+}
+
+// Damayan Assistance model
+model DamayanAssistance {
+  id                Int                 @id @default(autoincrement())
+  requestDate       DateTime            @default(now())
+  amount            Float?
+  reason            String
+  status            DamayanAssistanceStatus @default(PENDING)
+  approvalDate      DateTime?
+  disbursementDate  DateTime?
+  rejectionReason   String?
+  userId            Int
+  user              User                @relation(fields: [userId], references: [id])
+  damayanFundId     Int
+  damayanFund       DamayanFund         @relation(fields: [damayanFundId], references: [id])
+  approvedById      Int?
+  approvedBy        User?               @relation("DamayanApprover", fields: [approvedById], references: [id])
+  transactionId     Int?                @unique
+  transaction       Transaction?        @relation(fields: [transactionId], references: [id])
+  documents         DamayanDocument[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+}
+
+// Damayan Document model
+model DamayanDocument {
+  id                Int                 @id @default(autoincrement())
+  name              String
+  fileUrl           String
+  documentType      DamayanDocumentType
+  assistanceId      Int
+  assistance        DamayanAssistance   @relation(fields: [assistanceId], references: [id])
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+}
+
+// Add these enums
+enum DamayanFundStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum DamayanContributionType {
+  AUTOMATIC
+  MANUAL
+  TRANSACTION_BASED
+}
+
+enum DamayanAssistanceStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  DISBURSED
+}
+
+enum DamayanDocumentType {
+  MEDICAL_BILL
+  DEATH_CERTIFICATE
+  HOSPITAL_RECORD
+  PROOF_OF_RELATIONSHIP
+  OTHER
+}
+
+// Update existing models
+
+// Damayan User Settings model
+model DamayanUserSettings {
+  id                Int                 @id @default(autoincrement())
+  userId            Int                 @unique
+  user              User                @relation(fields: [userId], references: [id])
+  autoContribute    Boolean             @default(false)
+  contributionType  String              @default("FIXED") // FIXED or PERCENTAGE
+  fixedAmount       Float               @default(10)
+  percentageAmount  Float               @default(1)
+  monthlyContribution Boolean           @default(false)
+  monthlyAmount     Float               @default(50)
+  receiveNotifications Boolean          @default(true)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+}
+
+// Update User model
+model User {
+  // ... existing fields
+  damayanContributions    DamayanContribution[]
+  damayanAssistanceRequests DamayanAssistance[]
+  damayanApprovals        DamayanAssistance[]  @relation("DamayanApprover")
+  damayanSettings         DamayanUserSettings?
+}
+
+// Update Transaction model
+model Transaction {
+  // ... existing fields
+  damayanContribution     DamayanContribution?
+  damayanAssistance       DamayanAssistance?
+}
+
+// Update TransactionType enum
+enum TransactionType {
+  // ... existing types
+  DAMAYAN_CONTRIBUTION
+  DAMAYAN_DISBURSEMENT
+}
+
+// Update NotificationType enum
+enum NotificationType {
+  // ... existing types
+  DAMAYAN_REQUEST
+  DAMAYAN_APPROVAL
+  DAMAYAN_DISBURSEMENT
+  DAMAYAN_CONTRIBUTION
+}

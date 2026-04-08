@@ -1,0 +1,24 @@
+// Add these to your existing schema.prisma file
+
+// Cooperative Type enum
+enum CooperativeType {
+  CREDIT
+  MULTI_PURPOSE
+}
+
+// Update the Cooperative model
+model Cooperative {
+  // Existing fields...
+  type               CooperativeType       @default(CREDIT)
+  // Other fields...
+}
+
+// New SystemConfig model for global settings
+model SystemConfig {
+  id                 Int                   @id @default(autoincrement())
+  key                String                @unique
+  value              String
+  description        String?
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+}

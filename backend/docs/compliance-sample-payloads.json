@@ -1,0 +1,43 @@
+{
+  "createFiling": {
+    "cooperativeId": 1,
+    "context": {
+      "profileType": "PRIMARY",
+      "hasCTE": true,
+      "isElectric": false,
+      "isNewlyRegistered": false,
+      "coverageYear": 2024
+    },
+    "filing": {
+      "coverageYear": 2024,
+      "registrationNo": "CDA-REG-0001",
+      "membershipTotal": 100,
+      "membershipRegular": 80,
+      "membershipAssociate": 20,
+      "authorizedRep": {
+        "fullName": "Juan Dela Cruz",
+        "position": "Accountable Officer",
+        "governmentIdType": "UMID",
+        "governmentIdNo": "UMID-12345",
+        "mobile": "+639171234567",
+        "email": "officer@coop.ph"
+      },
+      "financialSummary": {
+        "totalAssets": 5000000,
+        "totalLiabilities": 2000000,
+        "totalIncome": 800000
+      }
+    }
+  },
+  "completeModule": {
+    "moduleType": "AFS",
+    "evidenceUrl": "https://storage/afs-2024.pdf"
+  },
+  "setStatus": {
+    "status": "SUBMITTED"
+  },
+  "deficiencyNotice": {
+    "noticeDate": "2025-04-01",
+    "details": "Missing social audit report"
+  }
+}
